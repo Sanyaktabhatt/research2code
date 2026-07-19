@@ -1,0 +1,29 @@
+import torch
+
+# Extracted from the source paper (see config.yaml `optimizer` section):
+# {{ optimizer_name }}
+
+_OPTIMIZERS = {
+    "adam": torch.optim.Adam,
+    "adamw": torch.optim.AdamW,
+    "sgd": torch.optim.SGD,
+    "rmsprop": torch.optim.RMSprop,
+    "adagrad": torch.optim.Adagrad,
+}
+
+
+def build_optimizer(model: torch.nn.Module, config: dict) -> torch.optim.Optimizer:
+    opt_config = config["optimizer"]
+    name = opt_config["name"].strip().lower()
+    optimizer_cls = _OPTIMIZERS.get(name)
+
+    if optimizer_cls is None:
+        raise ValueError(f"Unknown optimizer '{opt_config['name']}'. Add it to `_OPTIMIZERS` in optimizer.py.")
+
+    kwargs: dict = {"lr": float(opt_config.get("learning_rate", 1e-3))}
+    if "weight_decay" in opt_config and opt_config["weight_decay"] is not None:
+        kwargs["weight_decay"] = float(opt_config["weight_decay"])
+    if name == "sgd":
+        kwargs["momentum"] = float(opt_config.get("momentum", 0.9))
+
+    return optimizer_cls(model.parameters(), **kwargs)

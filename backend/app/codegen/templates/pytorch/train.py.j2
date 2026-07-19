@@ -1,0 +1,241 @@
+"""Training entrypoint for {{ project_name }}.
+
+Config-driven: all hyperparameters come from a YAML file (see config.yaml).
+Usage:
+    python train.py --config config.yaml
+    python train.py --config config.yaml --resume checkpoints/checkpoint_epoch_10.pt
+{% if options.use_ddp %}
+Multi-GPU (DDP):
+    torchrun --nproc_per_node=<N> train.py --config config.yaml
+{% endif %}
+"""
+
+import argparse
+import json
+
+import torch
+import yaml
+{% if options.use_amp %}
+from torch.cuda.amp import GradScaler, autocast
+{% endif %}
+from tqdm import tqdm
+
+from callbacks.checkpoint import CheckpointManager
+{% if options.early_stopping %}
+from callbacks.early_stopping import EarlyStopping
+{% endif %}
+{% if options.use_mlflow %}
+from callbacks.mlflow_logger import MLflowLogger
+{% endif %}
+{% if options.use_tensorboard %}
+from callbacks.tensorboard_logger import TensorBoardLogger
+{% endif %}
+from dataloader import build_dataloaders
+from dataset import build_datasets
+from losses import build_loss
+from metrics import compute_metrics
+from model import build_model
+from optimizer import build_optimizer
+from scheduler import build_scheduler
+from utils.distributed import cleanup_distributed, is_main_process, setup_distributed
+from utils.logging import get_logger
+from utils.seed import set_seed
+
+logger = get_logger(__name__)
+
+
+def load_config(path: str) -> dict:
+    with open(path) as f:
+        return yaml.safe_load(f)
+
+
+def emit_progress(**fields) -> None:
+    """Machine-readable progress marker read by the execution platform's log
+    monitor (current epoch/step, used to compute elapsed time/ETA). Safe to
+    ignore when running this script standalone - it's just a stdout line.
+    """
+    print(f"PROGRESS {json.dumps(fields)}", flush=True)
+
+
+def train_one_epoch(
+    model, loader, optimizer, loss_fn, device, scaler=None, epoch: int = 0
+) -> float:
+    model.train()
+    running_loss = 0.0
+    total_steps = len(loader)
+
+    progress = tqdm(loader, desc=f"Epoch {epoch} [train]", disable=not is_main_process(0))
+    for step, (inputs, targets) in enumerate(progress, start=1):
+        inputs, targets = inputs.to(device), targets.to(device)
+        optimizer.zero_grad(set_to_none=True)
+{% if options.use_amp %}
+        with autocast(enabled=scaler is not None):
+            outputs = model(inputs)
+            loss = loss_fn(outputs, targets)
+
+        if scaler is not None:
+            scaler.scale(loss).backward()
+            scaler.step(optimizer)
+            scaler.update()
+        else:
+            loss.backward()
+            optimizer.step()
+{% else %}
+        outputs = model(inputs)
+        loss = loss_fn(outputs, targets)
+        loss.backward()
+        optimizer.step()
+{% endif %}
+        running_loss += loss.item() * inputs.size(0)
+        progress.set_postfix(loss=loss.item())
+
+        if is_main_process(0) and (step % 10 == 0 or step == total_steps):
+            emit_progress(stage="train", epoch=epoch, step=step, total_steps=total_steps, loss=loss.item())
+
+    return running_loss / len(loader.dataset)
+
+
+@torch.no_grad()
+def validate(model, loader, loss_fn, device, epoch: int = 0) -> dict:
+    model.eval()
+    running_loss = 0.0
+    all_outputs, all_targets = [], []
+
+    for inputs, targets in tqdm(loader, desc=f"Epoch {epoch} [val]", disable=not is_main_process(0)):
+        inputs, targets = inputs.to(device), targets.to(device)
+        outputs = model(inputs)
+        loss = loss_fn(outputs, targets)
+
+        running_loss += loss.item() * inputs.size(0)
+        all_outputs.append(outputs.detach().cpu())
+        all_targets.append(targets.detach().cpu())
+
+    metrics = compute_metrics(torch.cat(all_outputs), torch.cat(all_targets))
+    metrics["loss"] = running_loss / len(loader.dataset)
+    return metrics
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Train {{ project_name }}")
+    parser.add_argument("--config", type=str, default="config.yaml")
+    parser.add_argument("--resume", type=str, default=None, help="Path to a checkpoint to resume from")
+    args = parser.parse_args()
+
+    config = load_config(args.config)
+    set_seed(int(config["training"].get("seed", 42)))
+
+{% if options.use_ddp %}
+    rank, world_size, local_rank = setup_distributed()
+{% else %}
+    rank, world_size, local_rank = 0, 1, 0
+{% endif %}
+    device = torch.device(f"cuda:{local_rank}" if torch.cuda.is_available() else "cpu")
+
+    train_dataset, val_dataset = build_datasets(config)
+    train_loader, val_loader = build_dataloaders(train_dataset, val_dataset, config, rank, world_size)
+
+    model = build_model(config).to(device)
+{% if options.use_ddp %}
+    if world_size > 1:
+        model = torch.nn.parallel.DistributedDataParallel(
+            model, device_ids=[local_rank] if torch.cuda.is_available() else None
+        )
+{% endif %}
+
+    optimizer = build_optimizer(model, config)
+    scheduler = build_scheduler(optimizer, config)
+    loss_fn = build_loss(config)
+{% if options.use_amp %}
+    scaler = GradScaler(enabled=torch.cuda.is_available())
+{% else %}
+    scaler = None
+{% endif %}
+
+    checkpoint_manager = CheckpointManager(config["training"].get("checkpoint_dir", "checkpoints"))
+{% if options.early_stopping %}
+    early_stopping = EarlyStopping(
+        patience=int(config["training"].get("early_stopping_patience", 10)), mode="min"
+    )
+{% endif %}
+{% if options.use_tensorboard %}
+    tb_logger = TensorBoardLogger(config["training"].get("log_dir", "runs")) if is_main_process(rank) else None
+{% endif %}
+{% if options.use_mlflow %}
+    mlflow_logger = None
+    if is_main_process(rank):
+        mlflow_logger = MLflowLogger(config["training"].get("experiment_name", "{{ project_name }}"))
+        mlflow_logger.start_run()
+        mlflow_logger.log_params(config["training"])
+{% endif %}
+
+    start_epoch = 0
+    best_metric = float("inf")
+    if args.resume:
+        state = checkpoint_manager.load(args.resume, map_location=str(device))
+        model.load_state_dict(state["model_state_dict"])
+        optimizer.load_state_dict(state["optimizer_state_dict"])
+        if scheduler is not None and state.get("scheduler_state_dict"):
+            scheduler.load_state_dict(state["scheduler_state_dict"])
+{% if options.use_amp %}
+        if scaler is not None and state.get("scaler_state_dict"):
+            scaler.load_state_dict(state["scaler_state_dict"])
+{% endif %}
+        start_epoch = state["epoch"] + 1
+        best_metric = state.get("best_metric", best_metric)
+        logger.info("Resumed from %s at epoch %d", args.resume, start_epoch)
+
+    epochs = int(config["training"]["epochs"])
+    for epoch in range(start_epoch, epochs):
+        train_loss = train_one_epoch(model, train_loader, optimizer, loss_fn, device, scaler, epoch)
+        val_metrics = validate(model, val_loader, loss_fn, device, epoch)
+
+        if scheduler is not None:
+            if isinstance(scheduler, torch.optim.lr_scheduler.ReduceLROnPlateau):
+                scheduler.step(val_metrics["loss"])
+            else:
+                scheduler.step()
+
+        if is_main_process(rank):
+            logger.info("Epoch %d: train_loss=%.4f val_loss=%.4f", epoch, train_loss, val_metrics["loss"])
+            emit_progress(
+                stage="epoch_end",
+                epoch=epoch,
+                total_epochs=epochs,
+                train_loss=train_loss,
+                **{f"val_{k}": v for k, v in val_metrics.items()},
+            )
+{% if options.use_tensorboard %}
+            if tb_logger is not None:
+                tb_logger.log_scalar("train/loss", train_loss, epoch)
+                tb_logger.log_scalars({f"val/{k}": v for k, v in val_metrics.items()}, epoch)
+{% endif %}
+{% if options.use_mlflow %}
+            if mlflow_logger is not None:
+                mlflow_logger.log_metrics({"train_loss": train_loss, **{f"val_{k}": v for k, v in val_metrics.items()}}, epoch)
+{% endif %}
+
+            is_best = val_metrics["loss"] < best_metric
+            best_metric = min(best_metric, val_metrics["loss"])
+            checkpoint_manager.save(epoch, model, optimizer, scheduler, scaler, best_metric, is_best)
+
+{% if options.early_stopping %}
+        if is_main_process(rank) and early_stopping.step(val_metrics["loss"]):
+            logger.info("Early stopping triggered at epoch %d", epoch)
+            break
+{% endif %}
+
+{% if options.use_tensorboard %}
+    if is_main_process(rank) and tb_logger is not None:
+        tb_logger.close()
+{% endif %}
+{% if options.use_mlflow %}
+    if is_main_process(rank) and mlflow_logger is not None:
+        mlflow_logger.end_run()
+{% endif %}
+{% if options.use_ddp %}
+    cleanup_distributed()
+{% endif %}
+
+
+if __name__ == "__main__":
+    main()

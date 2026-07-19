@@ -1,0 +1,26 @@
+import yaml
+
+from dataset import build_datasets
+
+
+def _load_test_config() -> dict:
+    with open("config.yaml") as f:
+        return yaml.safe_load(f)
+
+
+def test_datasets_are_non_empty() -> None:
+    config = _load_test_config()
+    train_dataset, val_dataset = build_datasets(config)
+
+    assert len(train_dataset) > 0
+    assert len(val_dataset) > 0
+
+
+def test_dataset_item_shape_is_consistent() -> None:
+    config = _load_test_config()
+    train_dataset, _ = build_datasets(config)
+
+    first_input, first_target = train_dataset[0]
+    second_input, _ = train_dataset[1]
+
+    assert first_input.shape == second_input.shape

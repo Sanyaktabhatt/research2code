@@ -1,0 +1,101 @@
+# {{ project_name }}
+
+Auto-generated, reproducible PyTorch implementation, produced by Research2Code's
+Code Generation Engine from the paper's extracted knowledge, knowledge graph,
+and retrieved context.
+
+> Generated code is a strong reproduction starting point, not a guaranteed
+> exact replica of the paper's results - review `model.py`, `dataset.py`,
+> `losses.py` and `metrics.py` against the paper before relying on it.
+
+## Model
+
+- **Architecture**: {{ model_name }}
+- **Task/Domain**: see `config.yaml`
+- **Optimizer**: {{ optimizer_name }} (lr={{ learning_rate }}, weight_decay={{ weight_decay }})
+- **Scheduler**: {{ scheduler_name }}
+- **Dataset**: {{ dataset_name }}
+
+## Project layout
+
+```
+train.py              training entrypoint (config-driven, AMP/DDP-ready)
+evaluate.py            standalone evaluation
+infer.py                single-input inference
+model.py                model definition
+dataset.py              dataset definition
+dataloader.py           DataLoader construction (DDP-aware)
+losses.py               loss function(s)
+metrics.py              evaluation metrics
+optimizer.py            optimizer construction
+scheduler.py            LR scheduler construction
+config.yaml             active training configuration
+configs/                additional named configuration profiles
+callbacks/              checkpointing, early stopping, TensorBoard/MLflow logging
+utils/                  seeding, logging, distributed-training helpers
+tests/                  smoke tests for model/dataset
+scripts/                convenience shell scripts
+notebooks/              exploration notebook
+```
+
+## Setup
+
+```bash
+pip install -r requirements.txt
+```
+
+## Train
+
+```bash
+python train.py --config config.yaml
+```
+
+Resume from a checkpoint:
+
+```bash
+python train.py --config config.yaml --resume checkpoints/checkpoint_epoch_10.pt
+```
+{% if options.use_ddp %}
+
+Multi-GPU (DistributedDataParallel):
+
+```bash
+torchrun --nproc_per_node=<NUM_GPUS> train.py --config config.yaml
+```
+{% endif %}
+
+## Evaluate
+
+```bash
+python evaluate.py --config config.yaml --checkpoint checkpoints/best.pt
+```
+
+## Docker
+
+```bash
+docker compose up train
+```
+{% if options.use_tensorboard %}
+
+## TensorBoard
+
+```bash
+docker compose up tensorboard
+# then open http://localhost:6006
+```
+{% endif %}
+{% if options.use_mlflow %}
+
+## MLflow
+
+```bash
+docker compose up mlflow
+# then open http://localhost:5000
+```
+{% endif %}
+
+## Tests
+
+```bash
+pytest tests/
+```

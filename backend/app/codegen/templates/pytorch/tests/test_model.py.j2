@@ -1,0 +1,32 @@
+import torch
+import yaml
+
+from model import build_model
+
+
+def _load_test_config() -> dict:
+    with open("config.yaml") as f:
+        return yaml.safe_load(f)
+
+
+def test_model_forward_pass_shape() -> None:
+    config = _load_test_config()
+    model = build_model(config)
+    model.eval()
+
+    batch_size = 2
+    dummy_input = torch.randn(batch_size, *_dummy_input_shape(config))
+
+    with torch.no_grad():
+        output = model(dummy_input)
+
+    assert output.shape[0] == batch_size
+
+
+def _dummy_input_shape(config: dict) -> tuple[int, ...]:
+    """Best-effort default input shape for a smoke test.
+
+    Adjust this to match what `dataset.py` actually produces for this
+    model/modality if the default (3x224x224 image) does not apply.
+    """
+    return config.get("model", {}).get("input_shape", [3, 224, 224])

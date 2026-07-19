@@ -1,0 +1,61 @@
+from pathlib import Path
+from typing import Any
+
+import torch
+
+
+class CheckpointManager:
+    """Saves/loads full training state (model, optimizer, scheduler, scaler,
+    epoch, best metric) so training can resume exactly where it left off.
+    """
+
+    def __init__(self, checkpoint_dir: str, keep_last: int = 3) -> None:
+        self.checkpoint_dir = Path(checkpoint_dir)
+        self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
+        self.keep_last = keep_last
+
+    def save(
+        self,
+        epoch: int,
+        model: torch.nn.Module,
+        optimizer: torch.optim.Optimizer,
+        scheduler: Any,
+        scaler: torch.cuda.amp.GradScaler | None,
+        best_metric: float,
+        is_best: bool,
+    ) -> Path:
+        state = {
+            "epoch": epoch,
+            "model_state_dict": model.state_dict(),
+            "optimizer_state_dict": optimizer.state_dict(),
+            "scheduler_state_dict": scheduler.state_dict() if scheduler is not None else None,
+            "scaler_state_dict": scaler.state_dict() if scaler is not None else None,
+            "best_metric": best_metric,
+        }
+
+        checkpoint_path = self.checkpoint_dir / f"checkpoint_epoch_{epoch}.pt"
+        torch.save(state, checkpoint_path)
+        self._prune_old_checkpoints()
+
+        if is_best:
+            torch.save(state, self.checkpoint_dir / "best.pt")
+
+        return checkpoint_path
+
+    def load(self, path: str | Path, map_location: str = "cpu") -> dict:
+        return torch.load(path, map_location=map_location)
+
+    def latest_checkpoint(self) -> Path | None:
+        checkpoints = sorted(
+            self.checkpoint_dir.glob("checkpoint_epoch_*.pt"),
+            key=lambda p: int(p.stem.rsplit("_", 1)[-1]),
+        )
+        return checkpoints[-1] if checkpoints else None
+
+    def _prune_old_checkpoints(self) -> None:
+        checkpoints = sorted(
+            self.checkpoint_dir.glob("checkpoint_epoch_*.pt"),
+            key=lambda p: int(p.stem.rsplit("_", 1)[-1]),
+        )
+        for stale in checkpoints[: -self.keep_last]:
+            stale.unlink(missing_ok=True)

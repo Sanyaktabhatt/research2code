@@ -1,0 +1,59 @@
+"""Single-input inference entrypoint for {{ project_name }}.
+
+Usage:
+    python infer.py --config config.yaml --checkpoint checkpoints/best.pt --input path/to/input
+"""
+
+import argparse
+
+import torch
+import yaml
+
+from model import build_model
+from utils.logging import get_logger
+
+logger = get_logger(__name__)
+
+
+def load_config(path: str) -> dict:
+    with open(path) as f:
+        return yaml.safe_load(f)
+
+
+def load_input(path: str) -> torch.Tensor:
+    """Loads and preprocesses a single input for inference.
+
+    TODO: replace with the preprocessing this model actually expects
+    (matching whatever `dataset.py`'s transforms do at training time).
+    """
+    raise NotImplementedError("Implement input loading/preprocessing for your data modality")
+
+
+@torch.no_grad()
+def predict(model: torch.nn.Module, inputs: torch.Tensor, device: torch.device) -> torch.Tensor:
+    model.eval()
+    inputs = inputs.to(device)
+    return model(inputs.unsqueeze(0) if inputs.dim() == 3 else inputs)
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Run inference with {{ project_name }}")
+    parser.add_argument("--config", type=str, default="config.yaml")
+    parser.add_argument("--checkpoint", type=str, required=True)
+    parser.add_argument("--input", type=str, required=True)
+    args = parser.parse_args()
+
+    config = load_config(args.config)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    model = build_model(config).to(device)
+    state = torch.load(args.checkpoint, map_location=str(device))
+    model.load_state_dict(state["model_state_dict"])
+
+    inputs = load_input(args.input)
+    outputs = predict(model, inputs, device)
+    logger.info("Prediction: %s", outputs.cpu().tolist())
+
+
+if __name__ == "__main__":
+    main()

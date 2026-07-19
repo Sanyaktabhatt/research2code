@@ -1,0 +1,16 @@
+from torch.utils.tensorboard import SummaryWriter
+
+
+class TensorBoardLogger:
+    def __init__(self, log_dir: str) -> None:
+        self.writer = SummaryWriter(log_dir=log_dir)
+
+    def log_scalar(self, tag: str, value: float, step: int) -> None:
+        self.writer.add_scalar(tag, value, step)
+
+    def log_scalars(self, tag_value_map: dict[str, float], step: int) -> None:
+        for tag, value in tag_value_map.items():
+            self.writer.add_scalar(tag, value, step)
+
+    def close(self) -> None:
+        self.writer.close()

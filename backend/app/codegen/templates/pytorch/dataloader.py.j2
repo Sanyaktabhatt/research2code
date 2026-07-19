@@ -1,0 +1,40 @@
+import torch
+from torch.utils.data import DataLoader, Dataset, DistributedSampler
+
+
+def build_dataloaders(
+    train_dataset: Dataset,
+    val_dataset: Dataset,
+    config: dict,
+    rank: int = 0,
+    world_size: int = 1,
+) -> tuple[DataLoader, DataLoader]:
+    data_config = config["data"]
+    batch_size = int(data_config.get("batch_size", config["training"].get("batch_size", 32)))
+    num_workers = int(data_config.get("num_workers", 4))
+
+    train_sampler = None
+    val_sampler = None
+    if world_size > 1:
+        train_sampler = DistributedSampler(train_dataset, num_replicas=world_size, rank=rank, shuffle=True)
+        val_sampler = DistributedSampler(val_dataset, num_replicas=world_size, rank=rank, shuffle=False)
+
+    train_loader = DataLoader(
+        train_dataset,
+        batch_size=batch_size,
+        shuffle=(train_sampler is None),
+        sampler=train_sampler,
+        num_workers=num_workers,
+        pin_memory=torch.cuda.is_available(),
+        drop_last=True,
+    )
+    val_loader = DataLoader(
+        val_dataset,
+        batch_size=batch_size,
+        shuffle=False,
+        sampler=val_sampler,
+        num_workers=num_workers,
+        pin_memory=torch.cuda.is_available(),
+    )
+
+    return train_loader, val_loader

@@ -1,0 +1,76 @@
+"""Standalone evaluation entrypoint for {{ project_name }}.
+
+Usage:
+    python evaluate.py --config config.yaml --checkpoint checkpoints/best.pt
+"""
+
+import argparse
+import json
+
+import torch
+import yaml
+from tqdm import tqdm
+
+from dataloader import build_dataloaders
+from dataset import build_datasets
+from losses import build_loss
+from metrics import compute_metrics
+from model import build_model
+from utils.logging import get_logger
+
+logger = get_logger(__name__)
+
+
+def load_config(path: str) -> dict:
+    with open(path) as f:
+        return yaml.safe_load(f)
+
+
+@torch.no_grad()
+def evaluate(model, loader, loss_fn, device) -> dict:
+    model.eval()
+    running_loss = 0.0
+    all_outputs, all_targets = [], []
+
+    for inputs, targets in tqdm(loader, desc="Evaluating"):
+        inputs, targets = inputs.to(device), targets.to(device)
+        outputs = model(inputs)
+        loss = loss_fn(outputs, targets)
+
+        running_loss += loss.item() * inputs.size(0)
+        all_outputs.append(outputs.detach().cpu())
+        all_targets.append(targets.detach().cpu())
+
+    metrics = compute_metrics(torch.cat(all_outputs), torch.cat(all_targets))
+    metrics["loss"] = running_loss / len(loader.dataset)
+    return metrics
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Evaluate {{ project_name }}")
+    parser.add_argument("--config", type=str, default="config.yaml")
+    parser.add_argument("--checkpoint", type=str, required=True)
+    parser.add_argument("--output", type=str, default=None, help="Optional path to write metrics JSON to")
+    args = parser.parse_args()
+
+    config = load_config(args.config)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    _, val_dataset = build_datasets(config)
+    _, val_loader = build_dataloaders(val_dataset, val_dataset, config)
+
+    model = build_model(config).to(device)
+    state = torch.load(args.checkpoint, map_location=str(device))
+    model.load_state_dict(state["model_state_dict"])
+
+    loss_fn = build_loss(config)
+    metrics = evaluate(model, val_loader, loss_fn, device)
+
+    logger.info("Evaluation metrics: %s", metrics)
+    if args.output:
+        with open(args.output, "w") as f:
+            json.dump(metrics, f, indent=2)
+
+
+if __name__ == "__main__":
+    main()

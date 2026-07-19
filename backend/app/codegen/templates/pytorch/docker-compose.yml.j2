@@ -1,0 +1,37 @@
+services:
+  train:
+    build: .
+    volumes:
+      - ./data:/workspace/data
+      - ./checkpoints:/workspace/checkpoints
+      - ./runs:/workspace/runs
+    command: ["--config", "config.yaml"]
+{% if options.use_ddp %}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+{% endif %}
+{% if options.use_tensorboard %}
+
+  tensorboard:
+    image: tensorflow/tensorflow:2.16.1
+    command: ["tensorboard", "--logdir", "/runs", "--host", "0.0.0.0"]
+    ports:
+      - "6006:6006"
+    volumes:
+      - ./runs:/runs
+{% endif %}
+{% if options.use_mlflow %}
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.11.3
+    command: ["mlflow", "server", "--host", "0.0.0.0", "--backend-store-uri", "/mlruns"]
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlruns:/mlruns
+{% endif %}

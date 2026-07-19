@@ -1,0 +1,413 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Core surface / text */
+    --background: 240 25% 99%;
+    --foreground: 250 25% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 250 25% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 250 25% 10%;
+
+    /* Signature brand triad - violet -> fuchsia -> cyan. Every gradient,
+       glow, and "important action" color in the app derives from these
+       three so the identity reads as one deliberate system, not a grab
+       bag of accent colors. */
+    --brand-1: 262 83% 58%;
+    --brand-2: 322 81% 60%;
+    --brand-3: 189 94% 50%;
+
+    --primary: 262 83% 58%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 250 20% 95%;
+    --secondary-foreground: 250 25% 14%;
+
+    --muted: 250 20% 95%;
+    --muted-foreground: 250 10% 46%;
+
+    --accent: 262 83% 96%;
+    --accent-foreground: 262 83% 34%;
+
+    --destructive: 350 89% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 158 64% 40%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 95% 53%;
+    --warning-foreground: 30 40% 12%;
+
+    --border: 250 15% 90%;
+    --border-strong: 250 12% 80%;
+    --input: 250 12% 87%;
+    --ring: 262 83% 58%;
+
+    --radius: 0.875rem;
+
+    --shadow-color: 250 40% 15%;
+    --shadow-xs: 0 1px 2px hsl(var(--shadow-color) / 0.04);
+    --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.05), 0 1px 1px hsl(var(--shadow-color) / 0.04);
+    --shadow-md: 0 6px 16px -4px hsl(var(--shadow-color) / 0.08), 0 2px 6px -2px hsl(var(--shadow-color) / 0.05);
+    --shadow-lg: 0 16px 32px -10px hsl(var(--shadow-color) / 0.14), 0 6px 12px -6px hsl(var(--shadow-color) / 0.08);
+    --shadow-xl: 0 28px 56px -14px hsl(var(--shadow-color) / 0.22), 0 10px 20px -8px hsl(var(--shadow-color) / 0.1);
+
+    --glow-primary: 0 0 1px hsl(var(--brand-1) / 0.6), 0 0 24px -4px hsl(var(--brand-1) / 0.35);
+    --glow-accent: 0 0 1px hsl(var(--brand-3) / 0.6), 0 0 24px -4px hsl(var(--brand-3) / 0.35);
+
+    /* App shell */
+    --sidebar: 250 30% 99%;
+    --sidebar-foreground: 250 15% 28%;
+    --sidebar-border: 250 15% 91%;
+    --sidebar-accent: 262 83% 96%;
+    --sidebar-accent-foreground: 262 83% 34%;
+
+    /* Recharts series - keep the brand triad as the first three so every
+       chart visually rhymes with the buttons/glows around it. */
+    --chart-1: 262 83% 58%;
+    --chart-2: 189 94% 50%;
+    --chart-3: 322 81% 60%;
+    --chart-4: 38 95% 53%;
+    --chart-5: 158 64% 40%;
+
+    --flow-agent: 262 83% 58%;
+    --flow-entity: 189 84% 46%;
+    --flow-relation: 250 8% 68%;
+    --flow-active: 322 81% 60%;
+
+    --stage-pending: 250 8% 66%;
+    --stage-running: 38 95% 53%;
+    --stage-success: 158 64% 40%;
+    --stage-error: 350 89% 60%;
+
+    /* Knowledge graph node kinds - CVD-validated categorical set, see
+       features/graph-explorer/lib/node-type-config.ts */
+    --node-paper: 213 68% 50%;
+    --node-dataset: 159 73% 40%;
+    --node-model: 41 100% 46%;
+    --node-layer: 120 100% 26%;
+    --node-optimizer: 249 48% 44%;
+    --node-scheduler: 0 73% 59%;
+    --node-loss: 337 70% 70%;
+    --node-metric: 17 82% 56%;
+    --node-result: 175 84% 32%;
+    --node-hardware: 35 92% 33%;
+    --node-limitation: 192 91% 36%;
+    --node-futurework: 262 83% 58%;
+    --node-externalrepo: 85 85% 35%;
+    --node-task: 345 83% 41%;
+    --node-domain: 17 88% 40%;
+
+    --font-sans: "Geist Sans", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "Geist Mono", ui-monospace, monospace;
+  }
+
+  .dark {
+    --background: 252 32% 6%;
+    --foreground: 250 20% 94%;
+
+    --card: 252 28% 9%;
+    --card-foreground: 250 20% 94%;
+
+    --popover: 252 28% 9%;
+    --popover-foreground: 250 20% 94%;
+
+    --brand-1: 262 90% 70%;
+    --brand-2: 322 88% 68%;
+    --brand-3: 189 94% 58%;
+
+    --primary: 262 90% 70%;
+    --primary-foreground: 252 32% 8%;
+
+    --secondary: 252 18% 15%;
+    --secondary-foreground: 250 20% 94%;
+
+    --muted: 252 18% 15%;
+    --muted-foreground: 250 10% 65%;
+
+    --accent: 262 55% 20%;
+    --accent-foreground: 262 90% 88%;
+
+    --destructive: 350 85% 65%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 158 55% 48%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 90% 58%;
+    --warning-foreground: 30 40% 10%;
+
+    --border: 252 18% 18%;
+    --border-strong: 252 15% 28%;
+    --input: 252 15% 20%;
+    --ring: 262 90% 70%;
+
+    --shadow-color: 255 60% 2%;
+    --shadow-xs: 0 1px 2px hsl(var(--shadow-color) / 0.4);
+    --shadow-sm: 0 1px 3px hsl(var(--shadow-color) / 0.4), 0 1px 1px hsl(var(--shadow-color) / 0.3);
+    --shadow-md: 0 6px 18px -4px hsl(var(--shadow-color) / 0.5), 0 2px 6px -2px hsl(var(--shadow-color) / 0.35);
+    --shadow-lg: 0 18px 36px -10px hsl(var(--shadow-color) / 0.6), 0 6px 14px -6px hsl(var(--shadow-color) / 0.4);
+    --shadow-xl: 0 30px 60px -14px hsl(var(--shadow-color) / 0.7), 0 12px 24px -8px hsl(var(--shadow-color) / 0.45);
+
+    --glow-primary: 0 0 1px hsl(var(--brand-1) / 0.8), 0 0 32px -2px hsl(var(--brand-1) / 0.55);
+    --glow-accent: 0 0 1px hsl(var(--brand-3) / 0.8), 0 0 32px -2px hsl(var(--brand-3) / 0.5);
+
+    --sidebar: 254 34% 7%;
+    --sidebar-foreground: 250 12% 78%;
+    --sidebar-border: 252 18% 16%;
+    --sidebar-accent: 262 55% 20%;
+    --sidebar-accent-foreground: 262 90% 88%;
+
+    --chart-1: 262 90% 70%;
+    --chart-2: 189 94% 58%;
+    --chart-3: 322 88% 68%;
+    --chart-4: 38 90% 58%;
+    --chart-5: 158 55% 48%;
+
+    --flow-agent: 262 90% 70%;
+    --flow-entity: 189 84% 55%;
+    --flow-relation: 250 8% 45%;
+    --flow-active: 322 88% 68%;
+
+    --stage-pending: 250 8% 45%;
+    --stage-running: 38 90% 58%;
+    --stage-success: 158 55% 48%;
+    --stage-error: 350 85% 65%;
+
+    --node-paper: 213 77% 56%;
+    --node-dataset: 159 73% 36%;
+    --node-model: 40 100% 39%;
+    --node-layer: 120 100% 26%;
+    --node-optimizer: 247 69% 72%;
+    --node-scheduler: 0 72% 65%;
+    --node-loss: 338 61% 58%;
+    --node-metric: 17 70% 50%;
+    --node-result: 175 84% 32%;
+    --node-hardware: 35 92% 33%;
+    --node-limitation: 192 91% 36%;
+    --node-futurework: 258 90% 66%;
+    --node-externalrepo: 85 85% 35%;
+    --node-task: 347 77% 50%;
+    --node-domain: 21 90% 48%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv11", "ss01", "tnum";
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight text-foreground;
+  }
+
+  ::selection {
+    @apply bg-primary/25;
+  }
+
+  /* Keyboard-only focus indicator, consistent everywhere a native
+     :focus-visible ring isn't already supplied by a component (e.g. custom
+     clickable divs). Components with their own focus-visible ring (Button,
+     Input, ...) override this via their own classes. */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border-strong)) transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-border-strong rounded-full;
+    background-clip: padding-box;
+    border: 2px solid transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/40;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  /* Elegant lift for genuinely clickable cards/rows - not applied to Card by
+     default so static, non-interactive cards don't imply affordance they
+     don't have. */
+  .interactive-surface {
+    @apply transition-[transform,box-shadow,border-color] duration-200 ease-out;
+  }
+  .interactive-surface:hover {
+    @apply -translate-y-0.5 shadow-md border-border-strong;
+  }
+  .interactive-surface:active {
+    @apply translate-y-0 shadow-sm;
+  }
+
+  /* --- Signature identity system -------------------------------------- */
+
+  /* The brand gradient - used sparingly (hero surfaces, primary CTAs, logo
+     mark, active-state accents) so it reads as a signature rather than
+     wallpaper. */
+  .bg-gradient-brand {
+    background-image: linear-gradient(135deg, hsl(var(--brand-1)), hsl(var(--brand-2)) 52%, hsl(var(--brand-3)));
+  }
+  .bg-gradient-brand-soft {
+    background-image: linear-gradient(135deg, hsl(var(--brand-1) / 0.12), hsl(var(--brand-2) / 0.1) 50%, hsl(var(--brand-3) / 0.12));
+  }
+  .text-gradient-brand {
+    background-image: linear-gradient(100deg, hsl(var(--brand-1)), hsl(var(--brand-2)) 55%, hsl(var(--brand-3)));
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+  .border-gradient-brand {
+    border-image: linear-gradient(135deg, hsl(var(--brand-1)), hsl(var(--brand-3))) 1;
+  }
+
+  .shadow-glow {
+    box-shadow: var(--glow-primary);
+  }
+  .shadow-glow-accent {
+    box-shadow: var(--glow-accent);
+  }
+
+  /* Soft glow-on-hover for cards/buttons that deserve extra emphasis. */
+  .glow-hover {
+    @apply transition-shadow duration-300 ease-out;
+  }
+  .glow-hover:hover {
+    box-shadow: var(--glow-primary);
+  }
+
+  /* Radial "spotlight" wash for hero/empty-state surfaces - a few large,
+     very low-opacity blurred color fields, not a busy pattern. */
+  .bg-spotlight {
+    background-image:
+      radial-gradient(60% 50% at 15% 0%, hsl(var(--brand-1) / 0.16), transparent 60%),
+      radial-gradient(50% 40% at 100% 20%, hsl(var(--brand-3) / 0.14), transparent 60%),
+      radial-gradient(40% 40% at 50% 100%, hsl(var(--brand-2) / 0.08), transparent 60%);
+  }
+
+  /* Subtle dot grid for hero/auth backgrounds. */
+  .bg-dot-grid {
+    background-image: radial-gradient(hsl(var(--border-strong)) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  /* Frosted glass panel - translucent surface for floating chrome
+     (composer, inspector, floating toolbars) over busy content like the
+     graph canvas or PDF viewer. */
+  .glass-panel {
+    @apply border border-border/60 bg-card/75 shadow-lg backdrop-blur-xl;
+  }
+  .dark .glass-panel {
+    @apply bg-card/60;
+  }
+
+  /* Animated gradient border ring, used for the single most important
+     surface on a page (e.g. the active composer) - never more than one per
+     screen. */
+  .ring-gradient-animated {
+    position: relative;
+  }
+  .ring-gradient-animated::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(120deg, hsl(var(--brand-1)), hsl(var(--brand-3)), hsl(var(--brand-2)), hsl(var(--brand-1)));
+    background-size: 300% 300%;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: gradient-flow 6s ease infinite;
+    pointer-events: none;
+  }
+  @keyframes gradient-flow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  /* Smooths node repositioning when the knowledge graph switches layout
+     algorithms (force/hierarchical/radial) instead of nodes jumping. */
+  .react-flow__node {
+    transition: transform 400ms ease, opacity 200ms ease;
+  }
+
+  /* Visually hidden until keyboard-focused - standard "skip to content" pattern. */
+  .skip-link {
+    @apply fixed left-3 top-3 z-[100] -translate-y-16 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground opacity-0 transition-[transform,opacity] duration-150 focus:translate-y-0 focus:opacity-100;
+  }
+
+  /* Moving-gradient shimmer for loading skeletons, in place of a flat pulse -
+     works at any element width since it's percentage-based, not px offsets. */
+  .skeleton-shimmer {
+    background-image: linear-gradient(
+      100deg,
+      hsl(var(--muted)) 30%,
+      hsl(var(--brand-1) / 0.12) 50%,
+      hsl(var(--muted)) 70%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.8s ease-in-out infinite;
+  }
+  @keyframes skeleton-shimmer {
+    0% {
+      background-position: 150% 0;
+    }
+    100% {
+      background-position: -50% 0;
+    }
+  }
+
+  @keyframes float-slow {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+  .animate-float-slow {
+    animation: float-slow 6s ease-in-out infinite;
+  }
+
+  /* "Data flowing" effect for a selected knowledge-graph edge - the dash
+     pattern marches along the path. */
+  @keyframes edge-flow {
+    to { stroke-dashoffset: -20; }
+  }
+  .animate-edge-flow {
+    animation: edge-flow 1s linear infinite;
+  }
+}
+
+/* Respect the OS-level "reduce motion" preference: collapse all durations to
+   near-zero instead of disabling transitions outright, so state changes
+   (e.g. a newly-opened dialog) still resolve visually without animating. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

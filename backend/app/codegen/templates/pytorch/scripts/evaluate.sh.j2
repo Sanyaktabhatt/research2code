@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+CONFIG="${1:-config.yaml}"
+CHECKPOINT="${2:-checkpoints/best.pt}"
+
+python evaluate.py --config "${CONFIG}" --checkpoint "${CHECKPOINT}"

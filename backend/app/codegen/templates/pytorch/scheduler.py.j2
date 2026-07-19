@@ -1,0 +1,28 @@
+import torch
+
+# Extracted from the source paper (see config.yaml `scheduler` section):
+# {{ scheduler_name }}
+
+
+def build_scheduler(optimizer: torch.optim.Optimizer, config: dict):
+    scheduler_config = config.get("scheduler")
+    if not scheduler_config or not scheduler_config.get("name"):
+        return None
+
+    name = scheduler_config["name"].strip().lower()
+    epochs = config["training"]["epochs"]
+
+    if name in ("cosine", "cosineannealinglr"):
+        return torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs)
+    if name == "step":
+        return torch.optim.lr_scheduler.StepLR(
+            optimizer,
+            step_size=int(scheduler_config.get("step_size", max(epochs // 3, 1))),
+            gamma=float(scheduler_config.get("gamma", 0.1)),
+        )
+    if name in ("linear", "linearlr"):
+        return torch.optim.lr_scheduler.LinearLR(optimizer, total_iters=epochs)
+    if name in ("plateau", "reducelronplateau"):
+        return torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode="min", patience=5)
+
+    raise ValueError(f"Unknown scheduler '{scheduler_config['name']}'. Add it to scheduler.py.")

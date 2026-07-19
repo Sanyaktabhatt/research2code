@@ -1,0 +1,26 @@
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+exclude = ["app/codegen/templates"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.black]
+line-length = 110
+target-version = ["py311"]
+extend-exclude = "app/codegen/templates"
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+disallow_untyped_defs = false
+check_untyped_defs = true
+warn_unused_ignores = true
+exclude = ["app/codegen/templates", "tests"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = "-ra"
