@@ -53,7 +53,7 @@ export function Sidebar() {
 
       <div className="space-y-0.5 border-t border-sidebar-border p-2.5">
         <SidebarLink
-          href="/settings/account"
+          href="/settings"
           icon={Settings}
           label="Settings"
           collapsed={collapsed}

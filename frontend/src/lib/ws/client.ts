@@ -1,6 +1,29 @@
 import { env } from "@/config/env";
 import { WS_RECONNECT_BASE_DELAY_MS, WS_RECONNECT_MAX_DELAY_MS } from "@/config/constants";
 import { getAccessToken } from "@/lib/auth/tokens";
+import { refreshAccessToken } from "@/lib/api/client";
+
+/**
+ * `get_current_user_ws` rejects an expired/invalid `?token=` by closing
+ * *before* the WebSocket handshake completes (see docs/API.md on why auth
+ * has to travel as a query param at all). Browsers never surface the real
+ * server-sent close code for a pre-handshake rejection - `event.code` in
+ * `onclose` is always 1006 regardless of the actual reason, so there's no
+ * way to detect "closed because auth failed" reactively from a close event.
+ * Checking the token's own `exp` claim before connecting sidesteps that
+ * entirely, catching it before the doomed connection attempt.
+ */
+function isTokenExpired(token: string, skewSeconds = 10): boolean {
+  try {
+    const payload = token.split(".")[1];
+    if (!payload) return true;
+    const json = atob(payload.replace(/-/g, "+").replace(/_/g, "/"));
+    const exp = (JSON.parse(json) as { exp?: number }).exp;
+    return typeof exp !== "number" || Date.now() >= (exp - skewSeconds) * 1000;
+  } catch {
+    return true;
+  }
+}
 
 export type WsStatus = "idle" | "connecting" | "open" | "closed" | "error";
 
@@ -37,11 +60,29 @@ export function createWsClient({ path, onMessage, onStatusChange, reconnect = tr
     onStatusChange?.(next);
   };
 
-  const connect = () => {
-    const token = getAccessToken();
-    const url = `${env.NEXT_PUBLIC_WS_BASE_URL}${path}${token ? `?token=${encodeURIComponent(token)}` : ""}`;
-
+  const connect = async () => {
     setStatus("connecting");
+
+    // React Strict Mode (dev only) mounts this effect, synchronously runs
+    // its cleanup to verify one exists, then mounts it again - so the very
+    // first `connect()` call is always thrown away. Yielding a tick before
+    // ever touching the network lets that synchronous cleanup flip
+    // `closedIntentionally` first, so the throwaway pass returns here
+    // instead of opening (and immediately aborting) a real socket, which is
+    // what produces the browser's "WebSocket is closed before the
+    // connection is established" warning on every single page load.
+    await Promise.resolve();
+    if (closedIntentionally) return;
+
+    let token = getAccessToken();
+    if (!token || isTokenExpired(token)) {
+      token = await refreshAccessToken();
+    }
+    // A closed-in-the-meantime client (e.g. `close()` called while the
+    // refresh above was in flight) must not open a socket after the fact.
+    if (closedIntentionally) return;
+
+    const url = `${env.NEXT_PUBLIC_WS_BASE_URL}${path}${token ? `?token=${encodeURIComponent(token)}` : ""}`;
     socket = new WebSocket(url);
 
     socket.onopen = () => {

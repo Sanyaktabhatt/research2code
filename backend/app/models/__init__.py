@@ -3,6 +3,7 @@ from app.models.execution_run import ExecutionDevice, ExecutionRun, ExecutionRun
 from app.models.file import FileAsset, FileCategory, FileVersion
 from app.models.generated_project import GeneratedProject, GeneratedProjectStatus
 from app.models.knowledge import KnowledgeExtraction, KnowledgeExtractionStatus
+from app.models.oauth_account import OAuthAccount, OAuthProvider
 from app.models.paper import Paper, PaperProcessingStatus
 from app.models.project import Project, ProjectStatus
 from app.models.user import User, UserRole
@@ -10,6 +11,8 @@ from app.models.user import User, UserRole
 __all__ = [
     "User",
     "UserRole",
+    "OAuthAccount",
+    "OAuthProvider",
     "Project",
     "ProjectStatus",
     "Paper",

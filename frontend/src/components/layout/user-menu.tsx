@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOut, Settings, User as UserIcon } from "lucide-react";
+import { LogOut, Settings } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -21,32 +21,28 @@ export function UserMenu() {
 
   if (!user) return null;
 
+  const displayName = user.full_name ?? user.email;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button className="rounded-full outline-none ring-ring focus-visible:ring-2">
           <Avatar className="size-8">
-            <AvatarImage src={user.avatarUrl} alt={user.displayName} />
-            <AvatarFallback>{initials(user.displayName)}</AvatarFallback>
+            <AvatarImage alt={displayName} />
+            <AvatarFallback>{initials(displayName)}</AvatarFallback>
           </Avatar>
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel className="font-normal">
-          <p className="truncate text-sm font-medium">{user.displayName}</p>
+          <p className="truncate text-sm font-medium">{displayName}</p>
           <p className="truncate text-xs text-muted-foreground">{user.email}</p>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/settings/account">
-            <UserIcon />
-            Account
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/settings/tokens">
+          <Link href="/settings">
             <Settings />
-            API tokens
+            Settings
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />

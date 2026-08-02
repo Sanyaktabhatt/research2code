@@ -35,7 +35,17 @@ services:
       # bind mounts two lines down. See settings.py's docstring.
       EXECUTION_HOST_WORK_ROOT: ${PWD}/data/executions
       TENSORBOARD_HOST_LOG_ROOT: ${PWD}/data/tensorboard_logs
-    command: celery -A app.config.celery_config.celery_app worker --loglevel=info --concurrency=2
+    # task_routes in celery_config.py sends each task to its own named queue
+    # (paper_processing, knowledge_extraction, embeddings, rag, graph,
+    # codegen, execution) rather than the "default" queue a worker consumes
+    # from unless told otherwise - without -Q listing every queue, tasks are
+    # published but never picked up. A larger deployment should split the
+    # heavyweight `execution` queue onto its own worker pool (see
+    # docs/DEPLOYMENT.md); this single-worker compose setup consumes all of
+    # them so nothing silently stalls.
+    command: >
+      celery -A app.config.celery_config.celery_app worker --loglevel=info --concurrency=2
+      -Q default,paper_processing,knowledge_extraction,embeddings,rag,graph,codegen,execution
     depends_on:
       postgres:
         condition: service_healthy
@@ -46,7 +56,7 @@ services:
       neo4j:
         condition: service_healthy
       mlflow:
-        condition: service_started
+        condition: service_healthy
     volumes:
       - .:/app
       - ${PWD}/data/executions:/tmp/research2code/executions
@@ -146,13 +156,19 @@ services:
       AWS_ACCESS_KEY_ID: ${MINIO_ACCESS_KEY:-minioadmin}
       AWS_SECRET_ACCESS_KEY: ${MINIO_SECRET_KEY:-minioadmin}
     ports:
-      - "5000:5000"
+      - "5050:5000"
     volumes:
       - mlflow_data:/mlflow
     depends_on:
       minio:
         condition: service_healthy
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/')"]
+      interval: 15s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
 
   tensorboard:
     image: tensorflow/tensorflow:2.16.1
@@ -162,6 +178,12 @@ services:
     volumes:
       - ${PWD}/data/tensorboard_logs:/logs
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:6006/')"]
+      interval: 15s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
 
 volumes:
   postgres_data:

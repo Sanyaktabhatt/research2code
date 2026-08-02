@@ -1,21 +1,23 @@
 "use client";
 
 import * as React from "react";
-import { Boxes, FlaskConical, Loader2, Sparkles, Upload } from "lucide-react";
+import { Boxes, Code2, FlaskConical, Loader2, Sparkles, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
+  useTriggerCodeGeneration,
   useTriggerExecutionRun,
   useTriggerKnowledgeExtraction,
   useTriggerPaperEmbeddings,
   useUploadPaper,
 } from "@/features/workspace/api/use-workspace-actions";
 import { ApiError } from "@/lib/api/error";
-import type { GeneratedProject, Paper } from "@/types/domain";
+import type { GeneratedProject, KnowledgeExtraction, Paper } from "@/types/domain";
 
 interface QuickActionsProps {
   projectId: string;
   paper: Paper | undefined;
+  knowledge: KnowledgeExtraction | null | undefined;
   generatedProject: GeneratedProject | null | undefined;
 }
 
@@ -24,12 +26,15 @@ function errorMessage(error: unknown): string {
 }
 
 /** Real mutations against the backend's trigger endpoints - not just navigation links. */
-export function QuickActions({ projectId, paper, generatedProject }: QuickActionsProps) {
+export function QuickActions({ projectId, paper, knowledge, generatedProject }: QuickActionsProps) {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const uploadMutation = useUploadPaper(projectId);
   const extractMutation = useTriggerKnowledgeExtraction(paper?.id ?? "");
   const embedMutation = useTriggerPaperEmbeddings(paper?.id ?? "");
+  const codegenMutation = useTriggerCodeGeneration(paper?.id ?? "");
   const runMutation = useTriggerExecutionRun(generatedProject?.id ?? "");
+
+  const knowledgeReady = knowledge?.status === "completed";
 
   const paperParsed = paper?.status === "completed";
   const canRun = generatedProject?.status === "completed";
@@ -85,6 +90,26 @@ export function QuickActions({ projectId, paper, generatedProject }: QuickAction
       >
         {embedMutation.isPending ? <Loader2 className="animate-spin" /> : <Boxes />}
         Generate embeddings
+      </Button>
+
+      <Button
+        size="sm"
+        variant="outline"
+        disabled={!knowledgeReady || codegenMutation.isPending}
+        onClick={() =>
+          codegenMutation.mutate(undefined, {
+            onSuccess: (result) =>
+              toast.success(
+                result.generated_project
+                  ? `Project generation queued (version ${result.generated_project.version}).`
+                  : "Project generation queued.",
+              ),
+            onError: (error) => toast.error(errorMessage(error)),
+          })
+        }
+      >
+        {codegenMutation.isPending ? <Loader2 className="animate-spin" /> : <Code2 />}
+        Generate project
       </Button>
 
       <Button

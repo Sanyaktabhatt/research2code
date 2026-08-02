@@ -23,6 +23,24 @@ class InactiveUserError(AppException):
         super().__init__("User account is inactive")
 
 
+class OAuthProviderNotConfiguredError(AppException):
+    def __init__(self, provider: str) -> None:
+        self.provider = provider
+        super().__init__(f"OAuth provider '{provider}' is not configured")
+
+
+class OAuthStateMismatchError(AppException):
+    def __init__(self) -> None:
+        super().__init__("OAuth state did not match - possible CSRF attempt or expired session")
+
+
+class OAuthExchangeError(AppException):
+    """The provider rejected the code exchange or returned an unusable profile (e.g. no email)."""
+
+    def __init__(self, message: str) -> None:
+        super().__init__(message)
+
+
 class PermissionDeniedError(AppException):
     def __init__(self, message: str = "You do not have permission to perform this action") -> None:
         super().__init__(message)

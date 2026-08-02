@@ -54,7 +54,7 @@ export function CommandPalette() {
             <Workflow />
             All projects
           </CommandItem>
-          <CommandItem onSelect={() => go("/settings/account")}>
+          <CommandItem onSelect={() => go("/settings")}>
             <Settings />
             Settings
           </CommandItem>

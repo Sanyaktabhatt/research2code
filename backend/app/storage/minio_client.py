@@ -68,6 +68,30 @@ def get_minio_client() -> ResilientMinioClient:
     return ResilientMinioClient(client, _minio_breaker)
 
 
+@lru_cache
+def get_minio_public_client() -> Minio:
+    """Client used only to *sign* presigned URLs meant for browser
+    consumption - never to actually connect to MinIO.
+
+    Presigned-URL generation is a purely local HMAC computation, so this
+    never has to actually reach `MINIO_PUBLIC_ENDPOINT` (which, being a
+    Docker-internal hostname's host-facing counterpart, may not even be
+    reachable *from inside* this container) - it only needs that host baked
+    into the signature. `region` must still be given explicitly: without it,
+    minio-py's first presign falls back to a real `GetBucketLocation` call
+    against this same unreachable-from-here endpoint to discover it. See
+    `MINIO_PUBLIC_ENDPOINT`'s docstring in settings.py for why this client's
+    endpoint differs from the internal `get_minio_client()`'s.
+    """
+    return Minio(
+        settings.MINIO_PUBLIC_ENDPOINT or settings.MINIO_ENDPOINT,
+        access_key=settings.MINIO_ACCESS_KEY,
+        secret_key=settings.MINIO_SECRET_KEY,
+        secure=settings.MINIO_SECURE,
+        region="us-east-1",
+    )
+
+
 async def check_minio_connection() -> bool:
     # minio-py is a synchronous SDK; offload to a worker thread so a slow/down
     # MinIO endpoint can't block the event loop during a readiness check.

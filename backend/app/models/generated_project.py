@@ -43,7 +43,11 @@ class GeneratedProject(BaseModel):
     )
     version: Mapped[int] = mapped_column(nullable=False)
     status: Mapped[GeneratedProjectStatus] = mapped_column(
-        Enum(GeneratedProjectStatus, name="generated_project_status"),
+        Enum(
+            GeneratedProjectStatus,
+            name="generated_project_status",
+            values_callable=lambda x: [e.value for e in x],
+        ),
         default=GeneratedProjectStatus.PENDING,
         nullable=False,
         index=True,

@@ -13,6 +13,31 @@ def estimate_tokens(text: str) -> int:
     return max(1, len(text) // 4)
 
 
+# `token_budget` is a soft target, not a hard ceiling: sections are embedded
+# whole (see build_paper_embedding_targets - no sub-chunking), so the single
+# best-ranked block can, by itself, already exceed `token_budget` and is
+# still always force-included. Once that happens, comparing every later
+# block's size against the *remaining* budget (already negative) would
+# reject every subsequent block forever, no matter how small - silently
+# starving out small, highly relevant chunks (e.g. a 10-token fact) just
+# because an oversized chunk happened to rank first. Capping the running
+# total against a multiple of the nominal budget instead still bounds prompt
+# size, while leaving room for later small chunks to land.
+_HARD_CEILING_MULTIPLIER = 2
+
+# No single chunk may claim more than this fraction of the nominal budget.
+# Verified empirically: an unchunked ~3.3k-token section ranked first,
+# followed by a 10-token knowledge-entity fact that directly answered the
+# question, still produced "the context doesn't mention that" from the LLM
+# even once both were included - the short, precise fact was there but
+# effectively invisible, crowded out by a much longer, mostly-irrelevant
+# block placed ahead of it. Truncating any one chunk's contribution keeps
+# small, high-precision facts (curated knowledge-graph entities in
+# particular) from being visually/contextually drowned out by raw,
+# unchunked section text.
+_MAX_CHUNK_TOKEN_FRACTION = 0.4
+
+
 class ContextBuilder:
     """Turns ranked retrieval hits into one prompt-ready context block.
 
@@ -30,16 +55,28 @@ class ContextBuilder:
         citations: list[Citation] = []
         used_tokens = 0
 
-        for index, group in enumerate(merged, start=1):
-            block_text = f"[{index}] {group['content']}"
+        max_chunk_chars = int(token_budget * _MAX_CHUNK_TOKEN_FRACTION) * 4
+
+        for group in merged:
+            block_index = len(context_blocks) + 1
+            content = group["content"]
+            if len(content) > max_chunk_chars:
+                content = content[:max_chunk_chars].rstrip() + "…"
+            block_text = f"[{block_index}] {content}"
             block_tokens = estimate_tokens(block_text)
 
-            if context_blocks and used_tokens + block_tokens > token_budget:
-                break
+            # See `_HARD_CEILING_MULTIPLIER` above for why this compares
+            # against a multiple of the nominal budget rather than the
+            # (possibly already-negative) remaining budget: `continue`ing
+            # past a block that doesn't fit - rather than `break`ing the
+            # whole loop - lets smaller, later-ranked chunks still land even
+            # when an earlier, larger one didn't fit.
+            if context_blocks and used_tokens + block_tokens > token_budget * _HARD_CEILING_MULTIPLIER:
+                continue
 
             context_blocks.append(block_text)
             used_tokens += block_tokens
-            citations.append(self._to_citation(index, group))
+            citations.append(self._to_citation(block_index, group))
 
         return ContextResult(context_text="\n\n".join(context_blocks), citations=citations)
 

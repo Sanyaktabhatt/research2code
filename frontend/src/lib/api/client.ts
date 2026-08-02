@@ -31,16 +31,26 @@ export async function refreshAccessToken(): Promise<string | null> {
       body: JSON.stringify({ refresh_token: refreshToken }),
     })
       .then(async (res) => {
-        if (!res.ok) {
+        // Only a genuine rejection of the refresh token itself - 401 (expired,
+        // revoked, malformed) or 403 (account deactivated) - means the session
+        // is actually over. Any other non-2xx (a backend mid-restart 502/503,
+        // a proxy hiccup) is not evidence of that, and must not wipe the one
+        // credential a later retry needs. Clearing tokens here otherwise
+        // silently logs a user out just because the backend was briefly
+        // unreachable.
+        if (res.status === 401 || res.status === 403) {
           clearTokens();
           return null;
         }
+        if (!res.ok) return null;
         const data = (await res.json()) as { access_token: string; refresh_token: string };
         setTokens({ accessToken: data.access_token, refreshToken: data.refresh_token });
         return data.access_token;
       })
       .catch(() => {
-        clearTokens();
+        // fetch() itself threw - a network-level failure (offline, DNS,
+        // connection reset), not a rejection from the server. Same reasoning
+        // as the non-401 branch above: leave the refresh token in place.
         return null;
       })
       .finally(() => {
@@ -49,6 +59,40 @@ export async function refreshAccessToken(): Promise<string | null> {
   }
 
   return refreshPromise;
+}
+
+/**
+ * `detail` is a plain string for every error this app's own code raises
+ * (`raise HTTPException(detail=str(exc))` throughout the backend), but
+ * FastAPI's *automatic* request-body validation - triggered before an
+ * endpoint even runs, e.g. a signup password failing `min_length` - returns
+ * its own 422 shape instead: `{"detail": [{"type","loc","msg","input","ctx"}, ...]}`,
+ * an *array* of Pydantic error objects, not a string. Passing that through
+ * un-normalized left every caller rendering `error.detail` straight into
+ * JSX, which crashes the whole page ("Objects are not valid as a React
+ * child") the moment a validation 422 happens instead of showing a message.
+ */
+function extractErrorDetail(data: unknown): string | null {
+  if (typeof data !== "object" || data === null || !("detail" in data)) return null;
+  const detail = (data as { detail?: unknown }).detail;
+
+  if (typeof detail === "string" && detail) return detail;
+
+  if (Array.isArray(detail) && detail.length > 0) {
+    const messages = detail
+      .map((entry) => {
+        if (typeof entry === "string") return entry;
+        if (typeof entry !== "object" || entry === null) return null;
+        const { msg, loc } = entry as { msg?: unknown; loc?: unknown };
+        const field = Array.isArray(loc) ? loc.filter((part) => part !== "body").join(".") : null;
+        if (typeof msg !== "string") return null;
+        return field ? `${field}: ${msg}` : msg;
+      })
+      .filter((msg): msg is string => Boolean(msg));
+    if (messages.length > 0) return messages.join("; ");
+  }
+
+  return null;
 }
 
 function requestId(): string {
@@ -94,8 +138,8 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
   if (!response.ok) {
     let detail = "Internal server error";
     try {
-      const data = (await response.json()) as { detail?: string };
-      if (data.detail) detail = data.detail;
+      const data: unknown = await response.json();
+      detail = extractErrorDetail(data) ?? detail;
     } catch {
       // non-JSON error body, keep default detail
     }

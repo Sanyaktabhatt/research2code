@@ -33,7 +33,11 @@ class KnowledgeExtraction(BaseModel):
     )
     version: Mapped[int] = mapped_column(Integer, nullable=False)
     status: Mapped[KnowledgeExtractionStatus] = mapped_column(
-        Enum(KnowledgeExtractionStatus, name="knowledge_extraction_status"),
+        Enum(
+            KnowledgeExtractionStatus,
+            name="knowledge_extraction_status",
+            values_callable=lambda x: [e.value for e in x],
+        ),
         default=KnowledgeExtractionStatus.PENDING,
         nullable=False,
         index=True,

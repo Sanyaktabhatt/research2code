@@ -36,7 +36,7 @@ export function DashboardHeader() {
           ) : (
             <h1 className="text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
               {greeting()}
-              {user ? `, ${user.displayName.split(" ")[0]}` : ""}
+              {user ? `, ${(user.full_name ?? user.email).split(" ")[0]}` : ""}
               <span className="text-gradient-brand">.</span>
             </h1>
           )}

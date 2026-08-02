@@ -19,8 +19,10 @@ export type PipelineStageStatus = "pending" | "running" | "success" | "error";
 export interface User {
   id: string;
   email: string;
-  displayName: string;
-  avatarUrl?: string;
+  full_name: string | null;
+  role: "admin" | "user";
+  is_active: boolean;
+  created_at: string;
 }
 
 export interface Project {
@@ -126,6 +128,19 @@ export interface RAGAnswer {
 export interface WarmCacheResponse {
   paper_id: string;
   queued: boolean;
+}
+
+export interface OrchestratorQueryRequest {
+  query: string;
+  paper_id?: string | null;
+  history?: ConversationTurn[];
+  generate_full_project?: boolean;
+}
+
+export interface OrchestratorAnswer {
+  answer: string;
+  citations: Citation[];
+  generated_project: { id: string; version: number } | null;
 }
 
 /** `/rag/ws` frame shapes - see backend/app/api/v1/endpoints/rag.py. */

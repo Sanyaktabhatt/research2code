@@ -95,11 +95,48 @@ class DeterministicHashEmbeddingProvider(EmbeddingProvider):
         return vector
 
 
+class GoogleGenAIEmbeddingProvider(EmbeddingProvider):
+    def __init__(self, model: str, api_key: str | None, dimensions: int) -> None:
+        from langchain_google_genai import GoogleGenerativeAIEmbeddings
+
+        self.provider_name = "google_genai"
+        self.model_name = model
+        self.dimensions = dimensions
+
+        kwargs: dict[str, object] = {"model": model}
+        if api_key:
+            kwargs["google_api_key"] = api_key
+        self._client = GoogleGenerativeAIEmbeddings(**kwargs)
+
+    def embed_documents(self, texts: list[str]) -> list[list[float]]:
+        # Gemini embedding models default to a much larger native
+        # dimensionality (e.g. 3072 for gemini-embedding-001) than this
+        # deployment's pgvector column width. `output_dimensionality` must be
+        # passed on every call - the client only threads it through per-request,
+        # it does not fall back to a value fixed at construction time.
+        with observe_duration(embedding_request_duration_seconds, provider=self.provider_name):
+            return _embedding_breaker.call(
+                self._client.embed_documents, texts, output_dimensionality=self.dimensions
+            )
+
+    def embed_query(self, text: str) -> list[float]:
+        with observe_duration(embedding_request_duration_seconds, provider=self.provider_name):
+            return _embedding_breaker.call(
+                self._client.embed_query, text, output_dimensionality=self.dimensions
+            )
+
+
 def get_embedding_provider() -> EmbeddingProvider:
     if settings.EMBEDDING_PROVIDER == "openai":
         return OpenAIEmbeddingProvider(
             model=settings.EMBEDDING_MODEL,
             api_key=settings.OPENAI_API_KEY,
+            dimensions=settings.EMBEDDING_DIMENSIONS,
+        )
+    if settings.EMBEDDING_PROVIDER in ("gemini", "google_genai"):
+        return GoogleGenAIEmbeddingProvider(
+            model=settings.EMBEDDING_MODEL,
+            api_key=settings.GOOGLE_API_KEY,
             dimensions=settings.EMBEDDING_DIMENSIONS,
         )
     if settings.EMBEDDING_PROVIDER == "local":

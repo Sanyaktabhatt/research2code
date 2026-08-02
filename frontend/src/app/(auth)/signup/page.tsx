@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSignup } from "@/features/auth/api/use-auth";
+import { OAuthButtons } from "@/features/auth/components/oauth-buttons";
 import { ApiError } from "@/lib/api/error";
 
 export default function SignupPage() {
@@ -17,7 +18,7 @@ export default function SignupPage() {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    signup.mutate({ displayName, email, password });
+    signup.mutate({ full_name: displayName, email, password });
   };
 
   return (
@@ -72,6 +73,8 @@ export default function SignupPage() {
           {signup.isPending ? "Creating account…" : "Create account"}
         </Button>
       </form>
+
+      <OAuthButtons />
 
       <p className="text-center text-sm text-muted-foreground">
         Already have an account?{" "}

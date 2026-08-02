@@ -12,7 +12,7 @@ from app.auth.jwt_handler import (
 )
 from app.models.user import User, UserRole
 from app.repositories.user_repository import UserRepository
-from app.schemas.user import TokenResponse, UserSignup
+from app.schemas.user import TokenResponse, UserSignup, UserUpdate
 from app.utils.exceptions import (
     InactiveUserError,
     InvalidCredentialsError,
@@ -20,13 +20,13 @@ from app.utils.exceptions import (
     UserAlreadyExistsError,
 )
 
-# A precomputed bcrypt hash of an unguessable value, verified against on every
-# login for a nonexistent email so that this branch takes roughly the same
-# time as a real password check - otherwise the short-circuited `user is
-# None` case responds measurably faster, letting an attacker enumerate valid
-# emails purely from response latency.
-_DUMMY_PASSWORD_HASH = hash_password("not-a-real-password-used-only-for-timing-equalization")
-
+# Precomputed bcrypt hash for the literal ``dummy-password``. It is verified
+# for an unknown account to make that path take roughly as long as a normal
+# password check, preventing account enumeration through response timing.
+#
+# Keep this as a constant: bcrypt hashing is intentionally expensive and must
+# never run during module import (or every Uvicorn/Celery worker startup).
+_DUMMY_PASSWORD_HASH = "$2b$12$DUg.WU7PTqFD493zrULe1uqfDeendz4t7m1HIVmWS.cIqauz/uHqi"
 
 class AuthService:
     def __init__(self, session: AsyncSession) -> None:
@@ -50,14 +50,20 @@ class AuthService:
 
     async def login(self, email: str, password: str) -> TokenResponse:
         user = await self.user_repository.get_by_email(email)
-        password_hash = user.hashed_password if user is not None else _DUMMY_PASSWORD_HASH
+        # Falls back to the dummy hash both when there's no such user AND
+        # when the user exists but signed up via OAuth only (hashed_password
+        # is None) - either way there's no real password to check, and both
+        # must fail the same way (InvalidCredentialsError, same timing) so a
+        # login attempt can't be used to enumerate which emails are
+        # registered or which auth method they used.
+        password_hash = user.hashed_password if (user is not None and user.hashed_password) else _DUMMY_PASSWORD_HASH
 
         if not verify_password(password, password_hash) or user is None:
             raise InvalidCredentialsError()
         if not user.is_active:
             raise InactiveUserError()
 
-        return self._issue_tokens(user)
+        return self.issue_tokens(user)
 
     async def refresh(self, refresh_token: str) -> TokenResponse:
         payload = decode_token(refresh_token, TokenType.REFRESH)
@@ -72,9 +78,18 @@ class AuthService:
         if not user.is_active:
             raise InactiveUserError()
 
-        return self._issue_tokens(user)
+        return self.issue_tokens(user)
 
-    def _issue_tokens(self, user: User) -> TokenResponse:
+    async def update_profile(self, user: User, payload: UserUpdate) -> User:
+        # `user` is already attached to this request's session (loaded by
+        # the `get_current_active_user` dependency), so mutating it and
+        # committing is all that's needed - no separate repository write.
+        user.full_name = payload.full_name
+        await self.session.commit()
+        await self.session.refresh(user)
+        return user
+
+    def issue_tokens(self, user: User) -> TokenResponse:
         return TokenResponse(
             access_token=create_access_token(str(user.id), user.role),
             refresh_token=create_refresh_token(str(user.id), user.role),

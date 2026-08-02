@@ -66,7 +66,14 @@ export function DataTable<T>({
             <TableRow
               key={getRowId(row)}
               className={cn(onRowClick && "cursor-pointer", rowClassName?.(row))}
-              onClick={() => onRowClick?.(row)}
+              onClick={(event) => {
+                // A cell's own `<a>`/`<button>` (e.g. the row's primary link)
+                // already handles its own click and shouldn't also trigger
+                // a second, redundant `onRowClick` navigation bubbling up
+                // from the same click.
+                if ((event.target as HTMLElement).closest("a, button")) return;
+                onRowClick?.(row);
+              }}
             >
               {columns.map((col) => (
                 <TableCell key={col.id} className={col.className}>

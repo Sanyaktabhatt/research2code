@@ -49,14 +49,16 @@ class ExecutionRun(BaseModel):
     )
     version: Mapped[int] = mapped_column(Integer, nullable=False)
     status: Mapped[ExecutionRunStatus] = mapped_column(
-        Enum(ExecutionRunStatus, name="execution_run_status"),
+        Enum(ExecutionRunStatus, name="execution_run_status", values_callable=lambda x: [e.value for e in x]),
         default=ExecutionRunStatus.QUEUED,
         nullable=False,
         index=True,
     )
     execution_backend: Mapped[str] = mapped_column(String(32), nullable=False, default="docker")
     device: Mapped[ExecutionDevice] = mapped_column(
-        Enum(ExecutionDevice, name="execution_device"), nullable=False, default=ExecutionDevice.CPU
+        Enum(ExecutionDevice, name="execution_device", values_callable=lambda x: [e.value for e in x]),
+        nullable=False,
+        default=ExecutionDevice.CPU,
     )
     container_id: Mapped[str | None] = mapped_column(String(128), nullable=True)
 

@@ -27,7 +27,7 @@ class Paper(BaseModel):
     size_bytes: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
     status: Mapped[PaperProcessingStatus] = mapped_column(
-        Enum(PaperProcessingStatus, name="paper_processing_status"),
+        Enum(PaperProcessingStatus, name="paper_processing_status", values_callable=lambda x: [e.value for e in x]),
         default=PaperProcessingStatus.PENDING,
         nullable=False,
         index=True,

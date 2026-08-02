@@ -9,5 +9,8 @@ import type { User } from "@/types/domain";
 export const MOCK_USER: User = {
   id: "user_1",
   email: "ada@research2code.dev",
-  displayName: "Ada Lovelace",
+  full_name: "Ada Lovelace",
+  role: "user",
+  is_active: true,
+  created_at: new Date().toISOString(),
 };

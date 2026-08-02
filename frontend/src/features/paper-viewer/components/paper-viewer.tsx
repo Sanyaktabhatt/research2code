@@ -44,7 +44,7 @@ export function PaperViewer({ projectId }: PaperViewerProps) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
         <EmptyState icon={UploadCloud} title="No paper uploaded yet" description="Upload a paper to start reading, parsing, and extracting knowledge." />
-        <QuickActions projectId={projectId} paper={undefined} generatedProject={undefined} />
+        <QuickActions projectId={projectId} paper={undefined} knowledge={undefined} generatedProject={undefined} />
       </div>
     );
   }

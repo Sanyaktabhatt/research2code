@@ -52,7 +52,11 @@ def upgrade() -> None:
         sa.ForeignKeyConstraint(
             ["knowledge_extraction_id"],
             ["knowledge_extractions.id"],
-            name="fk_generated_projects_knowledge_extraction_id_knowledge_extractions",
+            # Postgres identifiers cap at 63 bytes; the full
+            # "..._knowledge_extraction_id_knowledge_extractions" name overflows
+            # that, so the referenced-table suffix is dropped here (it's
+            # already implied by the column name).
+            name="fk_generated_projects_knowledge_extraction_id",
             ondelete="CASCADE",
         ),
         sa.PrimaryKeyConstraint("id", name="pk_generated_projects"),

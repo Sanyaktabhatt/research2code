@@ -22,7 +22,8 @@ class FileAsset(BaseModel):
         UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
     )
     category: Mapped[FileCategory] = mapped_column(
-        Enum(FileCategory, name="file_category"), nullable=False
+        Enum(FileCategory, name="file_category", values_callable=lambda x: [e.value for e in x]),
+        nullable=False,
     )
     original_filename: Mapped[str] = mapped_column(String(512), nullable=False)
     latest_version: Mapped[int] = mapped_column(Integer, nullable=False, default=1)

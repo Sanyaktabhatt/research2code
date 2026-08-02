@@ -58,7 +58,9 @@ class Embedding(BaseModel):
         index=True,
     )
     source_type: Mapped[EmbeddingSourceType] = mapped_column(
-        Enum(EmbeddingSourceType, name="embedding_source_type"), nullable=False, index=True
+        Enum(EmbeddingSourceType, name="embedding_source_type", values_callable=lambda x: [e.value for e in x]),
+        nullable=False,
+        index=True,
     )
     source_ref: Mapped[str] = mapped_column(String(512), nullable=False)
     content: Mapped[str] = mapped_column(Text, nullable=False)

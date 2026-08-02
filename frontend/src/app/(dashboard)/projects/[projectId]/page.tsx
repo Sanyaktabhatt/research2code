@@ -38,7 +38,7 @@ export default function ProjectOverviewPage() {
 
   return (
     <div className="space-y-6">
-      <QuickActions projectId={params.projectId} paper={paper} generatedProject={generatedProject} />
+      <QuickActions projectId={params.projectId} paper={paper} knowledge={knowledge} generatedProject={generatedProject} />
 
       <StatCard
         label="Current pipeline status"

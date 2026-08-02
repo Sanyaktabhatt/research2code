@@ -9,7 +9,7 @@ const ACTIONS = [
   { href: "/projects/new", label: "New project", icon: FolderPlus, primary: true },
   { href: "/projects", label: "Browse projects", icon: LayoutGrid },
   { href: "/projects", label: "Explore a graph", icon: Share2 },
-  { href: "/settings/account", label: "Settings", icon: Settings },
+  { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 export function QuickActions() {

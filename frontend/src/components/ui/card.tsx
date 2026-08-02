@@ -9,7 +9,17 @@ const Card = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-xl border border-border bg-card text-card-foreground shadow-sm transition-colors duration-200",
+      // No blanket `h-full` here on purpose: it doesn't only kick in for the
+      // CSS-Grid-row-stretch case it was added for (dashboard cards matching
+      // their row's height) - it fires in *any* ancestor with a definite
+      // height, including a plain `flex flex-col` panel with an explicit
+      // height class (e.g. the Artifacts page), where it made a compact
+      // summary card balloon to fill nearly the entire panel and left the
+      // actual content below it squeezed into ~0px. Pass `h-full` via
+      // `className` at the specific call sites that need matched-height
+      // siblings (see dashboard/page.tsx) instead of defaulting every Card
+      // in the app to it.
+      "flex flex-col rounded-xl border border-border bg-card text-card-foreground shadow-sm transition-colors duration-200",
       className
     )}
     {...props}

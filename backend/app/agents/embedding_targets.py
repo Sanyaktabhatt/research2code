@@ -34,18 +34,34 @@ def build_paper_embedding_targets(parsed_paper: ParsedPaper) -> list[EmbeddingTa
         )
 
     for figure in parsed_paper.figures:
-        content = figure.caption or f"Figure {figure.index + 1} on page {figure.page_number}"
+        # A figure with no extracted caption has nothing distinguishing to
+        # embed - the "Figure N on page P" placeholder previously used here
+        # carries no real semantic content, so in vector search it embeds
+        # near the generic-academic-paper region of the space and ends up
+        # scoring as a spurious top match for nearly *any* query (verified:
+        # it out-scored the paper's actual, on-topic content for completely
+        # unrelated queries too), silently crowding out genuinely relevant
+        # chunks in retrieval. Skipping it entirely - consistent with how
+        # sections/equations below already skip when they have no text -
+        # is better than a low-information placeholder that actively hurts
+        # ranking quality.
+        if not figure.caption or not figure.caption.strip():
+            continue
         targets.append(
             EmbeddingTarget(
                 source_type=EmbeddingSourceType.FIGURE_CAPTION,
                 source_ref=f"figure:page{figure.page_number}:{figure.index}",
-                content=content,
+                content=figure.caption,
                 metadata={"page_number": figure.page_number},
             )
         )
 
     for table in parsed_paper.tables:
-        content = table.caption or table.raw_text or f"Table {table.index + 1} on page {table.page_number}"
+        # Same reasoning as figures above: skip rather than embed a
+        # content-free "Table N on page P" placeholder.
+        content = table.caption or table.raw_text
+        if not content or not content.strip():
+            continue
         targets.append(
             EmbeddingTarget(
                 source_type=EmbeddingSourceType.TABLE_DESCRIPTION,

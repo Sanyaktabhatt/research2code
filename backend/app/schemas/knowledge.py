@@ -8,7 +8,7 @@ from app.models.knowledge import KnowledgeExtractionStatus
 
 
 class KnowledgeExtractionRead(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True, protected_namespaces=())
 
     id: uuid.UUID
     paper_id: uuid.UUID

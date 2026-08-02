@@ -24,7 +24,9 @@ class Project(BaseModel):
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     status: Mapped[ProjectStatus] = mapped_column(
-        Enum(ProjectStatus, name="project_status"), default=ProjectStatus.CREATED, nullable=False
+        Enum(ProjectStatus, name="project_status", values_callable=lambda x: [e.value for e in x]),
+        default=ProjectStatus.CREATED,
+        nullable=False,
     )
 
     papers: Mapped[list["Paper"]] = relationship(

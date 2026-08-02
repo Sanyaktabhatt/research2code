@@ -4,7 +4,7 @@ import uuid
 from datetime import timedelta
 
 from app.config.settings import settings
-from app.storage.minio_client import get_minio_client
+from app.storage.minio_client import get_minio_client, get_minio_public_client
 
 
 async def save_file(data: bytes, filename: str, content_type: str | None, prefix: str = "papers") -> str:
@@ -32,7 +32,7 @@ async def get_file_url(storage_key: str, expires_seconds: int = 3600) -> str:
 
 async def generate_presigned_url(storage_key: str, expires_seconds: int = 3600) -> str:
     def _presign() -> str:
-        return get_minio_client().presigned_get_object(
+        return get_minio_public_client().presigned_get_object(
             settings.MINIO_BUCKET, storage_key, expires=timedelta(seconds=expires_seconds)
         )
 

@@ -31,9 +31,15 @@ export default function DashboardPage() {
         </AsyncSection>
       </MotionItem>
 
+      {/* `h-full` on each SectionCard here is deliberate and scoped to this
+          grid: it's what makes two side-by-side cards with uneven content
+          (e.g. a short empty state next to a longer list) match the row's
+          stretched height instead of each sizing to its own content. Card's
+          own base styles no longer default to `h-full` (see card.tsx) since
+          that leaked into non-grid contexts like the Artifacts page. */}
       <div className="grid gap-3 lg:grid-cols-3">
         <MotionItem className="lg:col-span-2">
-          <SectionCard title="Pipeline overview" description="Project status distribution">
+          <SectionCard title="Pipeline overview" description="Project status distribution" className="h-full">
             <AsyncSection label="pipeline overview" fallback={<ChartSkeleton />}>
               <PipelineOverview />
             </AsyncSection>
@@ -41,7 +47,7 @@ export default function DashboardPage() {
         </MotionItem>
 
         <MotionItem>
-          <SectionCard title="System health" description="Dependency readiness">
+          <SectionCard title="System health" description="Dependency readiness" className="h-full">
             <AsyncSection label="system health" fallback={<CardSkeleton />}>
               <SystemHealth />
             </AsyncSection>
@@ -51,7 +57,7 @@ export default function DashboardPage() {
 
       <div className="grid gap-3 lg:grid-cols-2">
         <MotionItem>
-          <SectionCard title="Recent projects" action={{ href: "/projects", label: "View all" }}>
+          <SectionCard title="Recent projects" action={{ href: "/projects", label: "View all" }} className="h-full">
             <AsyncSection label="recent projects" fallback={<ListSkeleton rows={5} />}>
               <RecentProjects />
             </AsyncSection>
@@ -59,7 +65,7 @@ export default function DashboardPage() {
         </MotionItem>
 
         <MotionItem>
-          <SectionCard title="Recent papers">
+          <SectionCard title="Recent papers" className="h-full">
             <AsyncSection label="recent papers" fallback={<ListSkeleton rows={5} />}>
               <RecentPapers />
             </AsyncSection>
@@ -69,7 +75,7 @@ export default function DashboardPage() {
 
       <div className="grid gap-3 lg:grid-cols-2">
         <MotionItem>
-          <SectionCard title="Running jobs" description="Active codegen and execution runs">
+          <SectionCard title="Running jobs" description="Active codegen and execution runs" className="h-full">
             <AsyncSection label="running jobs" fallback={<ListSkeleton rows={4} />}>
               <RunningJobs />
             </AsyncSection>
@@ -77,7 +83,7 @@ export default function DashboardPage() {
         </MotionItem>
 
         <MotionItem>
-          <SectionCard title="Recent activity">
+          <SectionCard title="Recent activity" className="h-full">
             <AsyncSection label="recent activity" fallback={<ListSkeleton rows={5} />}>
               <ActivityTimeline />
             </AsyncSection>
@@ -87,7 +93,7 @@ export default function DashboardPage() {
 
       <div className="grid gap-3 lg:grid-cols-2">
         <MotionItem>
-          <SectionCard title="Latest generated projects">
+          <SectionCard title="Latest generated projects" className="h-full">
             <AsyncSection label="latest generated projects" fallback={<ListSkeleton rows={5} />}>
               <LatestGeneratedProjects />
             </AsyncSection>
@@ -95,7 +101,7 @@ export default function DashboardPage() {
         </MotionItem>
 
         <MotionItem>
-          <SectionCard title="Recent experiment runs">
+          <SectionCard title="Recent experiment runs" className="h-full">
             <AsyncSection label="recent experiment runs" fallback={<ListSkeleton rows={5} />}>
               <RecentExperimentRuns />
             </AsyncSection>

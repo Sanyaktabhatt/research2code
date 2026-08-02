@@ -105,6 +105,12 @@ class Settings(BaseSettings):
 
     # MinIO
     MINIO_ENDPOINT: str = "localhost:9000"
+    # Host baked into presigned download URLs handed to the browser. Defaults
+    # to MINIO_ENDPOINT (fine when the API and the browser can reach MinIO the
+    # same way), but in Docker Compose MINIO_ENDPOINT is the container-network
+    # hostname ("minio:9000") the API/Celery containers use internally, which
+    # doesn't resolve from the host browser - set this separately in that case.
+    MINIO_PUBLIC_ENDPOINT: str | None = None
     MINIO_ACCESS_KEY: str = "minioadmin"
     MINIO_SECRET_KEY: str = "minioadmin"
     MINIO_BUCKET: str = "research2code"
@@ -128,8 +134,17 @@ class Settings(BaseSettings):
     LLM_TEMPERATURE: float = 0.0
     LLM_MAX_INPUT_CHARS: int = 60000
     LLM_REQUEST_TIMEOUT_SECONDS: int = 120
+    # Without an explicit cap, some providers/models (observed with OpenRouter
+    # + gpt-4o) request their full max output length by default - for a large
+    # model that reservation alone can exceed a small account's balance and
+    # 402 before generation even starts, regardless of how short the actual
+    # answer would be.
+    LLM_MAX_OUTPUT_TOKENS: int = 1024
     ANTHROPIC_API_KEY: str | None = None
     OPENAI_API_KEY: str | None = None
+    GOOGLE_API_KEY: str | None = None
+    OPENROUTER_API_KEY: str | None = None
+    OPENROUTER_BASE_URL: str = "https://openrouter.ai/api/v1"
 
     # Embeddings
     EMBEDDING_PROVIDER: str = "openai"
@@ -191,6 +206,25 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
     JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+
+    # OAuth ("continue with Google/GitHub"). A provider is only offered by
+    # `GET /auth/oauth/providers` (and thus only shown in the frontend) once
+    # both its client id and secret are set - there's no separate on/off
+    # flag, since a half-configured provider isn't functional anyway.
+    #
+    # `OAUTH_REDIRECT_BASE_URL` must exactly match the "Authorized redirect
+    # URI" registered with each provider's app (Google Cloud Console /
+    # GitHub OAuth App settings) - providers reject the callback otherwise.
+    # It's the backend's own externally-reachable base URL, not the
+    # frontend's - the provider redirects the browser straight back to the
+    # backend's callback endpoint, which does the code exchange server-side
+    # before handing off to the frontend.
+    GOOGLE_OAUTH_CLIENT_ID: str | None = None
+    GOOGLE_OAUTH_CLIENT_SECRET: str | None = None
+    GITHUB_OAUTH_CLIENT_ID: str | None = None
+    GITHUB_OAUTH_CLIENT_SECRET: str | None = None
+    OAUTH_REDIRECT_BASE_URL: str = "http://localhost:8000/api/v1"
+    FRONTEND_BASE_URL: str = "http://localhost:3000"
 
     @model_validator(mode="after")
     def _reject_insecure_defaults_outside_development(self) -> "Settings":

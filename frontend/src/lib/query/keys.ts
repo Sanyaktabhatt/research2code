@@ -6,6 +6,7 @@
 export const queryKeys = {
   auth: {
     me: () => ["auth", "me"] as const,
+    oauthProviders: () => ["auth", "oauth-providers"] as const,
   },
   projects: {
     all: () => ["projects"] as const,

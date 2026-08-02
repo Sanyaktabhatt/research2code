@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FolderGit2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DataTable, type DataTableColumn } from "@/components/ui/data-table";
@@ -12,6 +13,7 @@ import { projectStatusToStage } from "@/lib/utils/status-mapping";
 import type { Project } from "@/types/domain";
 
 export default function ProjectsPage() {
+  const router = useRouter();
   const { data, isLoading } = useProjects(1, 50);
   const projects = data?.items ?? [];
 
@@ -67,7 +69,13 @@ export default function ProjectsPage() {
           }
         />
       ) : (
-        <DataTable columns={columns} data={projects} getRowId={(p) => p.id} isLoading={isLoading} />
+        <DataTable
+          columns={columns}
+          data={projects}
+          getRowId={(p) => p.id}
+          isLoading={isLoading}
+          onRowClick={(project) => router.push(`/projects/${project.id}`)}
+        />
       )}
     </div>
   );

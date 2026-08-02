@@ -10,6 +10,7 @@ from app.models.user import UserRole
 from app.utils.exceptions import InvalidTokenError
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+_BCRYPT_MAX_PASSWORD_BYTES = 72
 
 
 class TokenType(StrEnum):
@@ -18,10 +19,17 @@ class TokenType(StrEnum):
 
 
 def hash_password(password: str) -> str:
+    if len(password.encode("utf-8")) > _BCRYPT_MAX_PASSWORD_BYTES:
+        raise ValueError("Password cannot exceed 72 UTF-8 bytes")
     return pwd_context.hash(password)
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
+    # bcrypt ignores/truncates input after 72 bytes. Reject it explicitly so
+    # an overlong login value cannot authenticate as the first 72 bytes and so
+    # malformed input cannot raise from the request path.
+    if len(plain_password.encode("utf-8")) > _BCRYPT_MAX_PASSWORD_BYTES:
+        return False
     return pwd_context.verify(plain_password, hashed_password)
 
 

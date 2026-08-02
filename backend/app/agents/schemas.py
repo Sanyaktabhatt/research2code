@@ -1,7 +1,30 @@
-from pydantic import BaseModel, Field
+from typing import Any
+
+from pydantic import BaseModel, ConfigDict, Field, model_validator
+
+# Every list field on ExtractedKnowledge - module-level, not a class
+# attribute, since Pydantic v2 treats an unannotated leading-underscore
+# class attribute as a private model attribute (wrapped in
+# `ModelPrivateAttr`), not a plain constant accessible via `cls._NAME`.
+_EXTRACTED_KNOWLEDGE_LIST_FIELDS = (
+    "datasets",
+    "preprocessing_steps",
+    "hyperparameters",
+    "loss_functions",
+    "augmentations",
+    "hardware_requirements",
+    "evaluation_metrics",
+    "reported_results",
+    "ablation_studies",
+    "limitations",
+    "future_work",
+    "external_resources",
+)
 
 
 class ConfidenceMixin(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
+
     confidence: float = Field(
         ge=0.0, le=1.0, description="Model's confidence that this extracted value is correct, 0-1."
     )
@@ -132,6 +155,29 @@ class ExtractedKnowledge(BaseModel):
     entirely by the LLM rather than filled with a low-confidence guess when
     the paper does not contain that information.
     """
+
+    model_config = ConfigDict(protected_namespaces=())
+
+    @model_validator(mode="before")
+    @classmethod
+    def _coerce_null_lists_to_empty(cls, data: Any) -> Any:
+        # `Field(default_factory=list)` only applies when a key is *absent*
+        # from the input - some models (reproduced with Qwen 2.5 72B via
+        # OpenRouter) instead return an explicit `"datasets": null` etc. for
+        # every list field it found nothing for, which fails validation
+        # outright (`Input should be a valid list ... NoneType`) since `None`
+        # is a present-but-wrong value, not a missing key. That crash isn't
+        # in this task's `autoretry_for` list, so it failed the whole
+        # extraction rather than the (harmless) "found nothing" it actually
+        # meant. A `null` for a *singular* optional field (e.g.
+        # `model_architecture`) is left untouched - `| None` already accepts
+        # it correctly there.
+        if not isinstance(data, dict):
+            return data
+        for field in _EXTRACTED_KNOWLEDGE_LIST_FIELDS:
+            if data.get(field) is None and field in data:
+                data[field] = []
+        return data
 
     metadata: PaperMetadata | None = None
     task_domain: TaskDomain | None = None
