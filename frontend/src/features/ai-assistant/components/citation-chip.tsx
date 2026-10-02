@@ -31,14 +31,14 @@ export function CitationChip({ citation, onOpen, variant = "inline" }: CitationC
             type="button"
             onClick={() => onOpen(citation)}
             disabled={!canNavigate}
-            className="mx-0.5 inline-flex size-4 -translate-y-0.5 items-center justify-center rounded bg-gradient-brand-soft align-super text-[10px] font-semibold text-primary transition-transform hover:scale-110 hover:shadow-glow disabled:cursor-default disabled:opacity-60 disabled:hover:scale-100 disabled:hover:shadow-none"
+            className="mx-0.5 inline-flex size-4 -translate-y-0.5 items-center justify-center rounded-sm border border-info/30 bg-info/[0.08] align-super text-[10px] font-semibold text-info transition-colors hover:bg-info/15 disabled:cursor-default disabled:opacity-60"
           >
             {citation.index}
           </button>
         </TooltipTrigger>
         <TooltipContent className="max-w-64">
           <p className="font-medium">{citationLabel(citation)}</p>
-          <p className="text-primary-foreground/70">
+          <p className="text-white/70">
             {SOURCE_TYPE_LABELS[citation.source_type]}
             {citation.page_number !== null && ` · page ${citation.page_number}`} · {Math.round(citation.score * 100)}% match
           </p>
@@ -57,7 +57,7 @@ export function CitationChip({ citation, onOpen, variant = "inline" }: CitationC
         canNavigate ? "hover:border-primary/50 hover:bg-accent" : "cursor-default opacity-70",
       )}
     >
-      <span className="flex size-5 shrink-0 items-center justify-center rounded bg-primary/15 text-[10px] font-semibold text-primary">
+      <span className="flex size-5 shrink-0 items-center justify-center rounded-sm bg-info/10 text-[10px] font-semibold text-info">
         {citation.index}
       </span>
       <Icon className="size-3.5 shrink-0 text-muted-foreground" />

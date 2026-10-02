@@ -97,7 +97,7 @@ export function ArtifactBrowser({ artifacts, selectedId, onSelect }: ArtifactBro
           Array.from(groups.entries()).map(([label, groupArtifacts]) => (
             <div key={label}>
               {groupKey !== "none" && (
-                <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                <p className="mb-2 section-label">
                   {label} ({groupArtifacts.length})
                 </p>
               )}

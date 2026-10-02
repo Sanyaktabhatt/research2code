@@ -14,8 +14,8 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          borderRadius: 9,
-          background: "linear-gradient(135deg, hsl(262, 83%, 58%) 0%, hsl(322, 81%, 60%) 52%, hsl(189, 94%, 50%) 100%)",
+          borderRadius: 7,
+          background: "hsl(21, 90%, 45%)",
         }}
       >
         <svg width="19" height="19" viewBox="0 0 24 24" fill="none">

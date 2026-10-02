@@ -11,7 +11,7 @@ interface InspectorFieldProps {
 function InspectorField({ label, value }: InspectorFieldProps) {
   return (
     <div>
-      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
+      <p className="section-label">{label}</p>
       <div className="mt-0.5 text-sm">{value}</div>
     </div>
   );
@@ -79,7 +79,7 @@ export function EntityInspectorDetail({
 
       {hasRelated && (
         <div className="space-y-2 border-t border-border pt-3">
-          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Related entities</p>
+          <p className="section-label">Related entities</p>
           <RelatedGroup label="Datasets" values={relatedEntities.datasets} />
           <RelatedGroup label="Models" values={relatedEntities.models} />
           <RelatedGroup label="Metrics" values={relatedEntities.metrics} />
@@ -89,7 +89,7 @@ export function EntityInspectorDetail({
       )}
 
       <div className="border-t border-border pt-3">
-        <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">Full metadata</p>
+        <p className="mb-1.5 section-label">Full metadata</p>
         <pre className="max-h-64 overflow-auto rounded-md bg-muted p-2 text-xs">{JSON.stringify(raw, null, 2)}</pre>
       </div>
     </div>

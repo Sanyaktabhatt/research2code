@@ -20,7 +20,7 @@ export function GraphLegend({ counts }: GraphLegendProps) {
   if (entries.length === 0) return null;
 
   return (
-    <Collapsible open={open} onOpenChange={setOpen} className="glass-panel rounded-xl p-2 text-card-foreground">
+    <Collapsible open={open} onOpenChange={setOpen} className="glass-panel rounded-md p-2 text-card-foreground">
       <CollapsibleTrigger className="flex w-full items-center gap-1.5 px-1 text-xs font-medium">
         <Tags className="size-3.5" />
         Legend

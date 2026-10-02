@@ -24,13 +24,13 @@ export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
         const isLast = index === items.length - 1;
         return (
           <span key={`${item.label}-${index}`} className="flex items-center gap-1">
-            <ChevronRight className="size-3.5 shrink-0 text-muted-foreground/50" />
+            <ChevronRight className="size-3.5 shrink-0 text-muted-foreground/60" />
             {item.href && !isLast ? (
-              <Link href={item.href} className="max-w-[14rem] truncate rounded transition-colors hover:text-foreground">
+              <Link href={item.href} className="max-w-[14rem] truncate rounded text-info underline-offset-2 hover:underline">
                 {item.label}
               </Link>
             ) : (
-              <span className={cn("max-w-[16rem] truncate", isLast && "font-medium text-foreground")}>{item.label}</span>
+              <span className={cn("max-w-[16rem] truncate", isLast && "font-semibold text-foreground")}>{item.label}</span>
             )}
           </span>
         );

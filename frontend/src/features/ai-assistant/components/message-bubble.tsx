@@ -57,7 +57,7 @@ export function MessageBubble({ message, onOpenCitation, onRegenerate, showSyste
       <div
         className={cn(
           "flex size-7 shrink-0 items-center justify-center rounded-full shadow-xs",
-          isUser ? "bg-secondary text-secondary-foreground" : "bg-gradient-brand text-primary-foreground shadow-glow",
+          isUser ? "border border-border bg-secondary text-secondary-foreground" : "border border-primary/25 bg-primary/10 text-primary",
         )}
       >
         {isUser ? <User className="size-3.5" /> : <Bot className="size-3.5" />}
@@ -66,9 +66,9 @@ export function MessageBubble({ message, onOpenCitation, onRegenerate, showSyste
       <div className={cn("flex min-w-0 max-w-[85%] flex-col gap-1.5", isUser && "items-end")}>
         <div
           className={cn(
-            "rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
+            "rounded-lg px-4 py-2.5 text-sm leading-relaxed",
             isUser
-              ? "rounded-tr-sm bg-primary text-primary-foreground"
+              ? "rounded-tr-sm bg-[hsl(218_41%_18%)] text-white dark:bg-[hsl(220_18%_22%)]"
               : "rounded-tl-sm border border-border bg-card text-card-foreground shadow-xs",
           )}
         >

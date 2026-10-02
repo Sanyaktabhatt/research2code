@@ -118,7 +118,7 @@ export function MarkdownRenderer({ content, citations = [], onOpenCitation, clas
           },
           a({ href, children }) {
             return (
-              <a href={href} target="_blank" rel="noreferrer" className="text-primary underline underline-offset-2">
+              <a href={href} target="_blank" rel="noreferrer" className="text-info underline underline-offset-2">
                 {children}
               </a>
             );

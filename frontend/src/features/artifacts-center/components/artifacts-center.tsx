@@ -77,7 +77,7 @@ export function ArtifactsCenter({ projectId }: ArtifactsCenterProps) {
       <StorageSummary summary={storageSummary} />
 
       <div className="flex min-h-0 flex-1 flex-col gap-3 lg:flex-row">
-        <div className="max-h-80 min-h-0 shrink-0 rounded-xl border border-border bg-muted/20 p-3 lg:h-full lg:max-h-none lg:w-72">
+        <div className="max-h-80 min-h-0 shrink-0 rounded-lg border border-border bg-card p-3 lg:h-full lg:max-h-none lg:w-72">
           <ArtifactBrowser artifacts={data.artifacts} selectedId={selectedId} onSelect={handleSelect} />
         </div>
 

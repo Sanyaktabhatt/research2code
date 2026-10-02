@@ -21,7 +21,7 @@ function Stat({ icon: Icon, label, value, hint }: StatProps) {
         <Icon className="size-4" />
       </div>
       <div className="min-w-0">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
+        <p className="section-label">{label}</p>
         <p className="truncate text-sm font-semibold">{value}</p>
         {hint && <p className="truncate text-xs text-muted-foreground">{hint}</p>}
       </div>

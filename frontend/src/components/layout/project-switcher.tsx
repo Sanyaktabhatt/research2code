@@ -32,7 +32,7 @@ export function ProjectSwitcher() {
   const activeProject = projects?.find((p) => p.id === params.projectId);
 
   if (isLoading) {
-    return <Skeleton className="h-8 w-56" />;
+    return <Skeleton className="h-8 w-40 sm:w-56" />;
   }
 
   return (
@@ -43,7 +43,7 @@ export function ProjectSwitcher() {
           size="sm"
           role="combobox"
           aria-expanded={open}
-          className="w-56 justify-between font-normal text-foreground/90"
+          className="w-40 justify-between font-medium text-foreground sm:w-56"
         >
           <span className="flex min-w-0 items-center gap-2">
             <FolderGit2 className="size-3.5 shrink-0 text-muted-foreground" />

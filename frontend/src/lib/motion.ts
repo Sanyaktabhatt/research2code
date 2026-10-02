@@ -8,17 +8,17 @@ export const springSoft: Transition = { type: "spring", stiffness: 220, damping:
 
 /** Fade + rise entrance for a single element. */
 export const fadeInUp: Variants = {
-  hidden: { opacity: 0, y: 14 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: EASE_OUT } },
+  hidden: { opacity: 0, y: 4 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.2, ease: EASE_OUT } },
 };
 
 export const fadeIn: Variants = {
   hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.35, ease: EASE_OUT } },
+  show: { opacity: 1, transition: { duration: 0.18, ease: EASE_OUT } },
 };
 
 export const scaleIn: Variants = {
-  hidden: { opacity: 0, scale: 0.96 },
+  hidden: { opacity: 0, scale: 0.99 },
   show: { opacity: 1, scale: 1, transition: springSnappy },
 };
 
@@ -26,21 +26,20 @@ export const scaleIn: Variants = {
 export const staggerContainer: Variants = {
   hidden: {},
   show: {
-    transition: { staggerChildren: 0.06, delayChildren: 0.02 },
+    transition: { staggerChildren: 0.02 },
   },
 };
 
 export const staggerItem: Variants = {
-  hidden: { opacity: 0, y: 10 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: EASE_OUT } },
+  hidden: { opacity: 0, y: 4 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.2, ease: EASE_OUT } },
 };
 
-/** Subtle lift + glow used on hoverable cards - pair with the `glow-hover` CSS class for the shadow half. */
-export const hoverLift = {
-  whileHover: { y: -3, transition: springSoft },
-  whileTap: { y: 0, scale: 0.99 },
-};
+/**
+ * Hoverable cards no longer move - the hover affordance is a border/shadow
+ * shift from the `glow-hover` / `interactive-surface` CSS classes. Kept as
+ * empty spreads so existing `{...hoverLift}` call sites stay valid.
+ */
+export const hoverLift = {};
 
-export const tapScale = {
-  whileTap: { scale: 0.97 },
-};
+export const tapScale = {};

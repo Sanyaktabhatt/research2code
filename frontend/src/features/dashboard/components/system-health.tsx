@@ -15,8 +15,8 @@ export function SystemHealth() {
   const { data } = useHealthSuspense();
 
   return (
-    <div className="space-y-2">
-      <div className="flex items-center gap-2">
+    <div className="space-y-3">
+      <div className="flex items-center gap-2 rounded-md border border-border bg-muted/50 px-3 py-2">
         {data.status === "ok" ? (
           <CheckCircle2 className="size-4 text-success" />
         ) : (
@@ -33,7 +33,7 @@ export function SystemHealth() {
               key={key}
               className={cn(
                 "flex items-center justify-between rounded-md border border-border px-3 py-2 text-sm",
-                !isOk && "border-destructive/40 bg-destructive/5",
+                !isOk && "border-destructive/40 bg-destructive/[0.04]",
               )}
             >
               <span>{CHECK_LABEL[key] ?? key}</span>

@@ -18,6 +18,7 @@ import { WorkspaceTabs } from "@/features/workspace/components/workspace-tabs";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useWorkspacePanelStore } from "@/stores/workspace-panel-store";
 import type { Project } from "@/types/domain";
+import { cn } from "@/lib/utils/cn";
 
 function isTabActive(pathname: string, projectId: string, segment: string | null): boolean {
   const href = segment ? `/projects/${projectId}/${segment}` : `/projects/${projectId}`;
@@ -27,25 +28,40 @@ function isTabActive(pathname: string, projectId: string, segment: string | null
 function LeftPanelContent({ projectId, project }: { projectId: string; project: Project }) {
   const { stages, isLoading } = usePipelineTracker(projectId);
 
+  const completedCount = stages.filter((stage) => stage.status === "success").length;
+
   return (
-    <div className="space-y-5">
+    <div>
       <ProjectInfo project={project} />
 
-      <div>
-        <h3 className="mb-2.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground/80">Pipeline</h3>
-        <PipelineTracker stages={stages} isLoading={isLoading} />
-      </div>
-
-      <div>
-        <h3 className="mb-2.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground/80">Workspace</h3>
+      <PanelSection title="Workspace">
         <WorkspaceTabs />
-      </div>
+      </PanelSection>
 
-      <div>
-        <h3 className="mb-2.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground/80">Recent activity</h3>
+      <PanelSection
+        title="Processing pipeline"
+        meta={!isLoading && stages.length > 0 ? `${completedCount}/${stages.length} complete` : undefined}
+      >
+        <PipelineTracker stages={stages} isLoading={isLoading} />
+      </PanelSection>
+
+      <PanelSection title="Recent activity" flush>
         <ActivityTimeline projectId={projectId} />
-      </div>
+      </PanelSection>
     </div>
+  );
+}
+
+/** One titled block of the left panel, separated from the previous one by a full-width hairline. */
+function PanelSection({ title, meta, flush = false, children }: { title: string; meta?: string; flush?: boolean; children: React.ReactNode }) {
+  return (
+    <section className="-mx-4 mt-4 border-t border-border px-4 pt-4">
+      <div className={cn("flex items-baseline justify-between gap-2", flush ? "mb-2" : "mb-3")}>
+        <h3 className="section-label">{title}</h3>
+        {meta && <span className="text-[11px] tabular-nums text-muted-foreground">{meta}</span>}
+      </div>
+      {children}
+    </section>
   );
 }
 
@@ -103,14 +119,14 @@ export function WorkspaceLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex h-full min-h-0 gap-3 bg-muted/20 p-3">
+    <div className="flex h-full min-h-0 bg-background">
       {isDesktop && (
-        <aside className="w-72 shrink-0 overflow-y-auto rounded-xl border border-border bg-card p-4 shadow-xs scrollbar-thin">
+        <aside className="w-72 shrink-0 overflow-y-auto overscroll-contain scroll-smooth border-r border-border bg-card px-4 pb-5 pt-4 scrollbar-thin" aria-label="Project navigation">
           <LeftPanelContent projectId={params.projectId} project={project} />
         </aside>
       )}
 
-      <div className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-xl border border-border bg-card shadow-xs">
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <WorkspaceHeader
           project={project}
           activeTabLabel={activeTab.label}
@@ -119,11 +135,11 @@ export function WorkspaceLayout({ children }: { children: React.ReactNode }) {
           onOpenNav={() => setNavSheetOpen(true)}
           onToggleInspector={() => (isDesktop ? toggleInspector() : setInspectorSheetOpen((open) => !open))}
         />
-        <div className="min-h-0 flex-1 overflow-y-auto p-6 scrollbar-thin">{children}</div>
+        <div className="min-h-0 flex-1 overflow-y-auto p-4 scrollbar-thin sm:p-6">{children}</div>
       </div>
 
       {isDesktop && !inspectorCollapsed && (
-        <div className="relative shrink-0 rounded-xl border border-border bg-card shadow-xs" style={{ width: inspectorWidth }}>
+        <div className="relative shrink-0 border-l border-border bg-card" style={{ width: inspectorWidth }}>
           <div
             role="separator"
             aria-orientation="vertical"
@@ -131,9 +147,9 @@ export function WorkspaceLayout({ children }: { children: React.ReactNode }) {
               isDragging.current = true;
               document.body.style.cursor = "col-resize";
             }}
-            className="absolute left-0 top-0 z-10 h-full w-1.5 -translate-x-1/2 cursor-col-resize transition-colors hover:bg-primary/30"
+            className="absolute left-0 top-0 z-10 h-full w-1.5 -translate-x-1/2 cursor-col-resize transition-colors hover:bg-info/40"
           />
-          <div className="h-full overflow-y-auto p-4 scrollbar-thin">
+          <div className="h-full overflow-y-auto px-4 py-5 scrollbar-thin">
             <ContextInspector project={project} />
           </div>
         </div>
@@ -141,7 +157,7 @@ export function WorkspaceLayout({ children }: { children: React.ReactNode }) {
 
       {!isDesktop && (
         <Sheet open={navSheetOpen} onOpenChange={setNavSheetOpen}>
-          <SheetContent side="left" className="overflow-y-auto">
+          <SheetContent side="left" className="overflow-y-auto overscroll-contain px-4 scrollbar-thin">
             <SheetHeader>
               <SheetTitle>Project</SheetTitle>
             </SheetHeader>

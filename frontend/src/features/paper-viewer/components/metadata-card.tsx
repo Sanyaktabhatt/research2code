@@ -12,7 +12,7 @@ interface InspectorFieldProps {
 function InspectorField({ label, value }: InspectorFieldProps) {
   return (
     <div>
-      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
+      <p className="section-label">{label}</p>
       <div className="mt-0.5 text-sm">{value}</div>
     </div>
   );

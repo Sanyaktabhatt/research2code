@@ -19,7 +19,7 @@ const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      "flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-background/60 px-3 py-2 text-sm shadow-xs transition-[border-color,box-shadow] duration-150 ease-out data-[placeholder]:text-muted-foreground/70 hover:border-border-strong focus:border-ring focus:outline-none focus:ring-[3px] focus:ring-ring/15 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 [&>svg]:opacity-50 [&>svg]:transition-transform [&>svg]:duration-150 data-[state=open]:[&>svg]:rotate-180",
+      "flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-card px-3 py-2 text-sm shadow-xs transition-[border-color,box-shadow] duration-150 ease-out data-[placeholder]:text-muted-foreground/70 hover:border-foreground/40 focus:border-ring focus:outline-none focus:ring-[3px] focus:ring-ring/20 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 [&>svg]:opacity-50 [&>svg]:transition-transform [&>svg]:duration-150 data-[state=open]:[&>svg]:rotate-180",
       className
     )}
     {...props}
@@ -139,7 +139,7 @@ const SelectSeparator = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SelectPrimitive.Separator
     ref={ref}
-    className={cn("-mx-1 my-1 h-px bg-muted", className)}
+    className={cn("-mx-1 my-1 h-px bg-border", className)}
     {...props}
   />
 ))

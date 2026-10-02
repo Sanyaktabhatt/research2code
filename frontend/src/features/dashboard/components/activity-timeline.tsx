@@ -1,7 +1,7 @@
 "use client";
 
-import { Bot, FileText, FlaskConical, FolderGit2 } from "lucide-react";
-import { Timeline, type TimelineItem } from "@/components/ui/timeline";
+import { FileText, FlaskConical, Folder, FolderCode } from "lucide-react";
+import { ActivityFeed, type ActivityFeedItem } from "@/components/ui/activity-feed";
 import { EmptyState } from "@/components/feedback/empty-state";
 import {
   useRecentExecutionRunsSuspense,
@@ -30,10 +30,10 @@ export function ActivityTimeline() {
   const { data: generatedProjects } = useRecentGeneratedProjectsSuspense(10);
   const { data: executionRuns } = useRecentExecutionRunsSuspense(10);
 
-  const items: TimelineItem[] = [
+  const items: ActivityFeedItem[] = [
     ...projects.items.slice(0, 10).map((project) => ({
       id: `project-${project.id}`,
-      icon: FolderGit2,
+      icon: Folder,
       title: `Project "${project.name}" ${project.status}`,
       timestamp: project.created_at,
       tone: TONE_FOR_STATUS[project.status],
@@ -48,7 +48,7 @@ export function ActivityTimeline() {
     })),
     ...generatedProjects.map((project) => ({
       id: `codegen-${project.id}`,
-      icon: Bot,
+      icon: FolderCode,
       title: `Generated project ${project.status} (v${project.version})`,
       description: project.framework,
       timestamp: project.created_at,
@@ -67,8 +67,9 @@ export function ActivityTimeline() {
     .slice(0, 12);
 
   if (items.length === 0) {
-    return <EmptyState icon={FolderGit2} title="No activity yet" description="Recent events across your projects will show up here." />;
+    return <EmptyState icon={Folder} title="No activity yet" description="Recent events across your projects will show up here." />;
   }
 
-  return <Timeline items={items} />;
+  // Bleeds to the SectionCard edges so separators and hover rows span the full card width.
+  return <ActivityFeed items={items} className="-mx-5 -mb-5 -mt-4 [--feed-inset:1.25rem]" />;
 }

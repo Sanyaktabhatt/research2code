@@ -247,7 +247,7 @@ function PaperViewerReady({
 
   return (
     <div className="flex h-full min-h-0 gap-4">
-      <div className="w-72 shrink-0 overflow-y-auto rounded-xl border border-border bg-muted/20 p-3 scrollbar-thin">
+      <div className="w-72 shrink-0 overflow-y-auto rounded-lg border border-border bg-card p-3 scrollbar-thin">
         <DocumentOutline
           outline={outline}
           activeSectionName={activeSectionName}
@@ -264,7 +264,7 @@ function PaperViewerReady({
         />
       </div>
 
-      <div className="min-w-0 flex-1 overflow-hidden rounded-xl border border-border shadow-xs">
+      <div className="min-w-0 flex-1 overflow-hidden rounded-lg border border-border shadow-xs">
         <PDFCanvas
           ref={canvasRef}
           pages={parsedPaper.pages}

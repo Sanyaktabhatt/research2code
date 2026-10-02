@@ -22,7 +22,7 @@ export default function ProjectsPage() {
       id: "name",
       header: "Project",
       cell: (project) => (
-        <Link href={`/projects/${project.id}`} className="font-medium hover:underline">
+        <Link href={`/projects/${project.id}`} className="font-medium text-info underline-offset-2 hover:underline">
           {project.name}
         </Link>
       ),
@@ -35,16 +35,19 @@ export default function ProjectsPage() {
     {
       id: "updatedAt",
       header: "Updated",
-      cell: (project) => <span className="text-muted-foreground">{formatRelativeTime(project.updated_at)}</span>,
+      cell: (project) => <span className="tabular-nums text-muted-foreground">{formatRelativeTime(project.updated_at)}</span>,
     },
   ];
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="page-header">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Projects</h1>
-          <p className="text-sm text-muted-foreground">Papers you&apos;ve turned into reproducible ML projects.</p>
+          <h1 className="page-title">
+            Projects
+            {data && <span className="ml-2 align-middle text-base font-normal text-muted-foreground">({data.total})</span>}
+          </h1>
+          <p className="page-description">Papers you&apos;ve turned into reproducible ML projects.</p>
         </div>
         <Button asChild>
           <Link href="/projects/new">

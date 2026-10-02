@@ -167,7 +167,7 @@ export function AssistantWorkspace({ projectId }: AssistantWorkspaceProps) {
   return (
     <div className="flex h-[calc(100vh-14rem)] min-h-[520px] gap-4">
       {historyOpen && (
-        <aside className="w-64 shrink-0 overflow-hidden rounded-xl border border-border bg-muted/20 p-3">
+        <aside className="w-64 shrink-0 overflow-hidden rounded-lg border border-border bg-card p-3">
           <ConversationHistory
             conversations={conversations.conversations}
             activeConversationId={activeConversationId}
@@ -180,7 +180,7 @@ export function AssistantWorkspace({ projectId }: AssistantWorkspaceProps) {
         </aside>
       )}
 
-      <div className="flex min-w-0 flex-1 flex-col gap-3 rounded-xl border border-border bg-card p-4 shadow-xs">
+      <div className="flex min-w-0 flex-1 flex-col gap-3 rounded-lg border border-border bg-card p-4 shadow-xs">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="icon" className="size-7" onClick={() => setHistoryOpen((v) => !v)} aria-label="Toggle conversation history">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { FileText, FlaskConical, Share2, Sparkles } from "lucide-react";
+import { CircleCheck, FileText, FlaskConical, Share2, Sparkles, Workflow } from "lucide-react";
 import { CardSkeleton } from "@/components/feedback/skeletons";
 import { EmptyState } from "@/components/feedback/empty-state";
 import { StageBadge } from "@/components/ui/stage-badge";
@@ -16,6 +16,15 @@ import {
   knowledgeExtractionStatusToStage,
   paperStatusToStage,
 } from "@/lib/utils/status-mapping";
+import type { PipelineStageStatus } from "@/types/domain";
+
+/** Icon accent for the pipeline status card, keyed by the current stage's real status. */
+const PIPELINE_STATUS_ACCENT = {
+  success: "success",
+  running: "info",
+  error: "destructive",
+  pending: "muted",
+} as const satisfies Record<PipelineStageStatus, "success" | "info" | "destructive" | "muted">;
 
 export default function ProjectOverviewPage() {
   const params = useParams<{ projectId: string }>();
@@ -43,7 +52,8 @@ export default function ProjectOverviewPage() {
       <StatCard
         label="Current pipeline status"
         value={currentStage?.label ?? "Not started"}
-        icon={Sparkles}
+        icon={currentStage?.status === "success" ? CircleCheck : Workflow}
+        accent={PIPELINE_STATUS_ACCENT[currentStage?.status ?? "pending"]}
       />
 
       <div className="grid gap-4 sm:grid-cols-2">

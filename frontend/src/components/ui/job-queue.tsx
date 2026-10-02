@@ -38,13 +38,13 @@ export function JobQueue({ jobs }: JobQueueProps) {
           <>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+                <span className="rounded-sm border border-border bg-muted px-1.5 py-px text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
                   {job.kind}
                 </span>
                 <p className="truncate text-sm font-medium">{job.title}</p>
               </div>
               <div
-                className="mt-2 h-1 w-full overflow-hidden rounded-full bg-primary/15 bg-[length:200%_100%] bg-gradient-to-r from-primary/20 via-primary to-primary/20 animate-shimmer"
+                className="mt-2 h-1 w-full overflow-hidden rounded-full bg-info/15 bg-[length:200%_100%] bg-gradient-to-r from-info/15 via-info/70 to-info/15 animate-shimmer"
                 aria-label="In progress"
               />
               <p className="mt-1 text-xs text-muted-foreground">Started {formatRelativeTime(job.createdAt)}</p>
@@ -52,7 +52,7 @@ export function JobQueue({ jobs }: JobQueueProps) {
             <StageBadge status={job.status} label={job.statusLabel} />
           </>
         );
-        const className = "flex items-center justify-between gap-4 rounded-lg border border-border px-4 py-3 transition-colors hover:bg-muted/50";
+        const className = "flex items-center justify-between gap-4 rounded-md border border-border bg-card px-4 py-3 transition-colors hover:border-border-strong hover:bg-accent/40";
 
         return (
           <li key={`${job.kind}-${job.id}`}>

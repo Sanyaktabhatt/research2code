@@ -19,7 +19,7 @@ const Card = React.forwardRef<
       // `className` at the specific call sites that need matched-height
       // siblings (see dashboard/page.tsx) instead of defaulting every Card
       // in the app to it.
-      "flex flex-col rounded-xl border border-border bg-card text-card-foreground shadow-sm transition-colors duration-200",
+      "flex flex-col rounded-lg border border-border bg-card text-card-foreground shadow-xs transition-colors duration-150",
       className
     )}
     {...props}
@@ -45,7 +45,7 @@ const CardTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("font-semibold leading-tight tracking-tight", className)}
+    className={cn("text-[15px] font-semibold leading-tight tracking-tight text-foreground", className)}
     {...props}
   />
 ))

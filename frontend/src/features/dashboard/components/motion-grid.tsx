@@ -6,13 +6,13 @@ import type { ReactNode } from "react";
 const container = {
   hidden: {},
   show: {
-    transition: { staggerChildren: 0.06 },
+    transition: { staggerChildren: 0.02 },
   },
 };
 
 const item = {
-  hidden: { opacity: 0, y: 8 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.25, ease: "easeOut" } },
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { duration: 0.18, ease: "easeOut" } },
 };
 
 export function MotionGrid({ children, className }: { children: ReactNode; className?: string }) {

@@ -16,7 +16,7 @@ import { MotionGrid, MotionItem } from "@/features/dashboard/components/motion-g
 
 export default function DashboardPage() {
   return (
-    <MotionGrid className="space-y-5">
+    <MotionGrid className="space-y-6">
       <MotionItem>
         <DashboardHeader />
       </MotionItem>
@@ -37,7 +37,7 @@ export default function DashboardPage() {
           stretched height instead of each sizing to its own content. Card's
           own base styles no longer default to `h-full` (see card.tsx) since
           that leaked into non-grid contexts like the Artifacts page. */}
-      <div className="grid gap-3 lg:grid-cols-3">
+      <div className="grid gap-4 lg:grid-cols-3">
         <MotionItem className="lg:col-span-2">
           <SectionCard title="Pipeline overview" description="Project status distribution" className="h-full">
             <AsyncSection label="pipeline overview" fallback={<ChartSkeleton />}>
@@ -55,7 +55,7 @@ export default function DashboardPage() {
         </MotionItem>
       </div>
 
-      <div className="grid gap-3 lg:grid-cols-2">
+      <div className="grid gap-4 lg:grid-cols-2">
         <MotionItem>
           <SectionCard title="Recent projects" action={{ href: "/projects", label: "View all" }} className="h-full">
             <AsyncSection label="recent projects" fallback={<ListSkeleton rows={5} />}>
@@ -73,7 +73,7 @@ export default function DashboardPage() {
         </MotionItem>
       </div>
 
-      <div className="grid gap-3 lg:grid-cols-2">
+      <div className="grid gap-4 lg:grid-cols-2">
         <MotionItem>
           <SectionCard title="Running jobs" description="Active codegen and execution runs" className="h-full">
             <AsyncSection label="running jobs" fallback={<ListSkeleton rows={4} />}>
@@ -91,7 +91,7 @@ export default function DashboardPage() {
         </MotionItem>
       </div>
 
-      <div className="grid gap-3 lg:grid-cols-2">
+      <div className="grid gap-4 lg:grid-cols-2">
         <MotionItem>
           <SectionCard title="Latest generated projects" className="h-full">
             <AsyncSection label="latest generated projects" fallback={<ListSkeleton rows={5} />}>
@@ -114,7 +114,7 @@ export default function DashboardPage() {
 
 function StatCardsSkeleton() {
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <CardSkeleton />
       <CardSkeleton />
       <CardSkeleton />

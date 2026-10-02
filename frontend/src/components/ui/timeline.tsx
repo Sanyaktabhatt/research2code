@@ -14,10 +14,12 @@ export interface TimelineItem {
 }
 
 const TONE_CLASSES: Record<NonNullable<TimelineItem["tone"]>, string> = {
-  default: "bg-muted text-muted-foreground",
-  success: "bg-success/15 text-success",
-  warning: "bg-warning/15 text-warning",
-  destructive: "bg-destructive/15 text-destructive",
+  default: "border-border bg-card text-muted-foreground",
+  success: "border-success/30 bg-success/[0.07] text-success",
+  // "warning" is used by every caller to mean in-progress, which the design
+  // system renders in the informational blue rather than amber.
+  warning: "border-info/30 bg-info/[0.07] text-info",
+  destructive: "border-destructive/30 bg-destructive/[0.07] text-destructive",
 };
 
 interface TimelineProps {
@@ -33,21 +35,21 @@ export function Timeline({ items, className }: TimelineProps) {
         const Icon = item.icon;
         const isLast = index === items.length - 1;
         return (
-          <li key={item.id} className="relative flex gap-3 pb-5 last:pb-0">
-            {!isLast && <span className="absolute left-[13px] top-7 h-[calc(100%-1.75rem)] w-px bg-border" aria-hidden />}
+          <li key={item.id} className="relative flex gap-3 pb-4 last:pb-0">
+            {!isLast && <span className="absolute left-[11px] top-6 h-[calc(100%-1.5rem)] w-px bg-border" aria-hidden />}
             <span
               className={cn(
-                "flex size-7 shrink-0 items-center justify-center rounded-full transition-colors duration-300",
+                "flex size-6 shrink-0 items-center justify-center rounded-full border transition-colors duration-200",
                 TONE_CLASSES[item.tone ?? "default"],
               )}
             >
-              <Icon className={cn("size-3.5", item.iconClassName)} />
+              <Icon className={cn("size-3", item.iconClassName)} />
             </span>
-            <div className="min-w-0 flex-1 pt-0.5">
+            <div className="min-w-0 flex-1 pt-[3px]">
               <div className="flex items-baseline justify-between gap-2">
                 <p className="truncate text-[13px] font-medium text-foreground">{item.title}</p>
                 {item.timestamp && (
-                  <span className="shrink-0 text-xs text-muted-foreground">{formatRelativeTime(item.timestamp)}</span>
+                  <span className="shrink-0 text-xs tabular-nums text-muted-foreground">{formatRelativeTime(item.timestamp)}</span>
                 )}
               </div>
               {item.description && <p className="mt-0.5 truncate text-xs text-muted-foreground">{item.description}</p>}

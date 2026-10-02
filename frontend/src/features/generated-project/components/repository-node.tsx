@@ -37,17 +37,17 @@ export const RepositoryNode = React.forwardRef<HTMLButtonElement, RepositoryNode
       className={cn(
         "relative flex w-full items-center gap-1.5 rounded-md py-1 pr-2 text-left text-xs outline-none transition-colors",
         "hover:bg-muted/60 focus-visible:bg-accent focus-visible:text-accent-foreground",
-        isSelected && "bg-gradient-brand-soft font-medium text-accent-foreground",
+        isSelected && "bg-info/[0.08] font-medium text-foreground",
         dimmed && "opacity-40",
       )}
     >
-      {isSelected && <span className="absolute inset-y-0.5 left-0 w-0.5 rounded-full bg-gradient-brand" aria-hidden="true" />}
+      {isSelected && <span className="absolute inset-y-0 left-0 w-0.5 bg-info" aria-hidden="true" />}
       {isFolder ? (
         <ChevronRight className={cn("size-3.5 shrink-0 text-muted-foreground transition-transform", isExpanded && "rotate-90")} />
       ) : (
         <span className="size-3.5 shrink-0" />
       )}
-      <Icon className={cn("size-3.5 shrink-0", isSelected ? "text-primary" : "text-muted-foreground")} />
+      <Icon className={cn("size-3.5 shrink-0", isSelected ? "text-info" : "text-muted-foreground")} />
       <span className="truncate">{node.name}</span>
     </button>
   );

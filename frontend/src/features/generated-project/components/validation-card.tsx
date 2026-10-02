@@ -66,7 +66,7 @@ export function ValidationCard({ group, onSelectFile }: ValidationCardProps) {
                     type="button"
                     onClick={() => onSelectFile?.(issue.file_path!)}
                     disabled={!onSelectFile}
-                    className="mt-0.5 truncate font-mono text-[11px] text-muted-foreground hover:text-primary hover:underline disabled:no-underline"
+                    className="mt-0.5 truncate font-mono text-[11px] text-muted-foreground hover:text-info hover:underline disabled:no-underline"
                   >
                     {issue.file_path}
                   </button>

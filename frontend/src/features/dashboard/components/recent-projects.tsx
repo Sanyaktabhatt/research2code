@@ -21,15 +21,15 @@ export function RecentProjects() {
   }
 
   return (
-    <ul className="space-y-1">
+    <ul className="-mx-5 -mb-5 -mt-4 divide-y divide-border">
       {projects.map((project) => (
         <li key={project.id}>
           <Link
             href={`/projects/${project.id}`}
-            className="flex items-center justify-between gap-3 rounded-md px-2.5 py-2 transition-colors duration-100 hover:bg-accent/50"
+            className="flex items-center justify-between gap-3 px-5 py-2.5 transition-colors duration-100 hover:bg-accent/50"
           >
             <div className="min-w-0">
-              <p className="truncate text-sm font-medium">{project.name}</p>
+              <p className="truncate text-sm font-medium text-info">{project.name}</p>
               <p className="text-xs text-muted-foreground">Updated {formatRelativeTime(project.updated_at)}</p>
             </div>
             <StageBadge status={projectStatusToStage(project.status)} label={project.status} />

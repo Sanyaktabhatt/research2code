@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import { motion } from "framer-motion";
 import { WORKSPACE_TABS, workspaceTabHref } from "@/config/nav";
 import { useKeyboardShortcut } from "@/hooks/use-keyboard-shortcut";
 import { cn } from "@/lib/utils/cn";
@@ -33,7 +32,7 @@ export function WorkspaceTabs() {
   }
 
   return (
-    <nav className="space-y-0.5">
+    <nav aria-label="Workspace" className="-mx-2 space-y-px">
       {WORKSPACE_TABS.map((tab) => {
         const active = isTabActive(pathname, params.projectId, tab.segment);
         return (
@@ -41,26 +40,33 @@ export function WorkspaceTabs() {
             key={tab.id}
             href={workspaceTabHref(params.projectId, tab)}
             className={cn(
-              "group relative flex items-center justify-between gap-2 rounded-lg px-2.5 py-[7px] text-[13px] font-medium text-foreground/70 transition-colors duration-150 hover:text-foreground",
-              active && "text-accent-foreground",
+              "group flex h-8 items-center gap-2.5 rounded-md px-2 text-[13px] text-foreground/80 outline-none transition-colors duration-100",
+              "hover:bg-accent/70 hover:text-foreground",
+              "focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+              active && "bg-accent font-semibold text-foreground",
             )}
+            aria-current={active ? "page" : undefined}
           >
-            {active && (
-              <motion.span
-                layoutId="workspace-tab-active-pill"
-                transition={{ type: "spring", stiffness: 500, damping: 38 }}
-                className="absolute inset-0 rounded-lg bg-accent shadow-sm"
-                aria-hidden="true"
-              />
-            )}
-            {active && (
-              <span className="absolute left-0 top-1/2 z-10 h-4 w-0.5 -translate-y-1/2 rounded-full bg-gradient-brand" aria-hidden="true" />
-            )}
-            <span className="relative z-10 flex min-w-0 items-center gap-2.5">
-              <tab.icon className="size-[17px] shrink-0 transition-transform duration-150 group-hover:scale-105" />
-              <span className="truncate">{tab.label}</span>
+            <tab.icon
+              className={cn(
+                "size-[18px] shrink-0 transition-colors",
+                active ? "text-primary" : "text-muted-foreground group-hover:text-foreground/80",
+              )}
+              strokeWidth={1.75}
+              aria-hidden="true"
+            />
+            <span className="min-w-0 flex-1 truncate" title={tab.label}>
+              {tab.label}
             </span>
-            <kbd className="relative z-10 shrink-0 font-mono text-[10px] font-medium text-muted-foreground/70">⌘{tab.shortcut}</kbd>
+            <kbd
+              className={cn(
+                "shrink-0 font-mono text-[10px] tabular-nums text-muted-foreground/60 transition-colors group-hover:text-muted-foreground",
+                active && "text-muted-foreground",
+              )}
+              aria-label={`Shortcut: Command ${tab.shortcut}`}
+            >
+              ⌘{tab.shortcut}
+            </kbd>
           </Link>
         );
       })}

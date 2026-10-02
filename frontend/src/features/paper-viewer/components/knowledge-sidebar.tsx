@@ -12,7 +12,7 @@ function KnowledgeGroup({ label, values }: KnowledgeGroupProps) {
   if (values.length === 0) return null;
   return (
     <div>
-      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
+      <p className="section-label">{label}</p>
       <div className="mt-1 flex flex-wrap gap-1">
         {values.map((value) => (
           <Badge key={value} variant="secondary">

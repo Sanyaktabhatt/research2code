@@ -24,7 +24,7 @@ export default function SignupPage() {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <h1 className="text-xl font-semibold">Create an account</h1>
+        <h1 className="text-xl font-semibold tracking-tight">Create an account</h1>
         <p className="text-sm text-muted-foreground">Start turning papers into runnable projects.</p>
       </div>
 
@@ -63,7 +63,7 @@ export default function SignupPage() {
         </div>
 
         {signup.isError && (
-          <p role="alert" className="rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
+          <p role="alert" className="rounded-md border border-destructive/30 border-l-4 border-l-destructive bg-destructive/[0.05] px-3 py-2 text-sm text-destructive">
             {ApiError.isApiError(signup.error) ? signup.error.detail : "Something went wrong. Please try again."}
           </p>
         )}
@@ -76,9 +76,9 @@ export default function SignupPage() {
 
       <OAuthButtons />
 
-      <p className="text-center text-sm text-muted-foreground">
+      <p className="border-t border-border pt-5 text-center text-sm text-muted-foreground">
         Already have an account?{" "}
-        <Link href="/login" className="font-medium text-primary hover:underline">
+        <Link href="/login" className="font-medium text-info underline-offset-2 hover:underline">
           Log in
         </Link>
       </p>

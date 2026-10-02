@@ -259,7 +259,7 @@ export function KnowledgeGraph({ projectId }: KnowledgeGraphProps) {
           />
         </div>
 
-        <div className="min-h-0 flex-1 overflow-hidden rounded-xl border border-border shadow-md">
+        <div className="min-h-0 flex-1 overflow-hidden rounded-lg border border-border shadow-xs">
           <GraphCanvas
             nodes={displayNodes}
             edges={displayEdges}

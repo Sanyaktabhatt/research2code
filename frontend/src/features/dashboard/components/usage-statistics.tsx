@@ -1,6 +1,6 @@
 "use client";
 
-import { FileText, FlaskConical, FolderGit2, Sparkles } from "lucide-react";
+import { FileText, FlaskConical, FolderKanban, Workflow } from "lucide-react";
 import { StatCard } from "@/components/ui/stat-card";
 import {
   useRecentExecutionRunsSuspense,
@@ -22,11 +22,11 @@ export function UsageStatistics() {
   const { data: executionRuns } = useRecentExecutionRunsSuspense(SAMPLE_LIMIT);
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-      <StatCard label="Total projects" value={projects.total} icon={FolderGit2} />
-      <StatCard label="Papers tracked" value={countLabel(papers.length)} icon={FileText} />
-      <StatCard label="Generated projects" value={countLabel(generatedProjects.length)} icon={Sparkles} />
-      <StatCard label="Execution runs" value={countLabel(executionRuns.length)} icon={FlaskConical} />
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <StatCard label="Total projects" value={projects.total} icon={FolderKanban} accent="blue" />
+      <StatCard label="Papers tracked" value={countLabel(papers.length)} icon={FileText} accent="cyan" />
+      <StatCard label="Generated projects" value={countLabel(generatedProjects.length)} icon={Workflow} accent="violet" />
+      <StatCard label="Execution runs" value={countLabel(executionRuns.length)} icon={FlaskConical} accent="orange" />
     </div>
   );
 }

@@ -19,8 +19,8 @@ export function RunCard({ run, isSelected, isComparing, onSelect, onToggleCompar
   return (
     <div
       className={cn(
-        "flex items-start gap-3 rounded-xl border p-3 text-left transition-all duration-200",
-        isSelected ? "border-primary/50 bg-gradient-brand-soft shadow-glow" : "border-border hover:-translate-y-0.5 hover:border-border-strong hover:bg-muted/50 hover:shadow-md",
+        "flex items-start gap-3 rounded-lg border bg-card p-3 text-left transition-[border-color,background-color,box-shadow] duration-150",
+        isSelected ? "border-info bg-info/[0.05] ring-1 ring-info" : "border-border hover:border-border-strong hover:bg-accent/40",
       )}
     >
       <Checkbox

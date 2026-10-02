@@ -54,7 +54,7 @@ export function GraphCanvas({
   children,
 }: GraphCanvasProps) {
   return (
-    <div className="relative h-full w-full bg-spotlight">
+    <div className="relative h-full w-full bg-muted/30">
       <ReactFlow<FlowNode, FlowEdge>
         nodes={nodes}
         edges={edges}

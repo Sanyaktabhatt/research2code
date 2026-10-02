@@ -21,9 +21,9 @@ export function RecentExperimentRuns() {
   }
 
   return (
-    <ul className="space-y-1">
+    <ul className="-mx-5 -mb-5 -mt-4 divide-y divide-border">
       {executionRuns.map((run) => (
-        <li key={run.id} className="flex items-center justify-between gap-3 rounded-md px-2 py-2">
+        <li key={run.id} className="flex items-center justify-between gap-3 px-5 py-2.5">
           <div className="min-w-0">
             <p className="truncate text-sm font-medium">
               {run.device.toUpperCase()} · v{run.version}

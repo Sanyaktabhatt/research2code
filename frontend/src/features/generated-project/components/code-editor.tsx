@@ -72,7 +72,7 @@ export function CodeEditor({ openPaths, activePath, files, onSelectTab, onCloseT
                   <motion.span
                     layoutId="code-editor-active-tab"
                     transition={{ type: "spring", stiffness: 500, damping: 40 }}
-                    className="absolute inset-x-0 top-0 h-0.5 bg-gradient-brand"
+                    className="absolute inset-x-0 top-0 h-0.5 bg-primary"
                     aria-hidden="true"
                   />
                 )}

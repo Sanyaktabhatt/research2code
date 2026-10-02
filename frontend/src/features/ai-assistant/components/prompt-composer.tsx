@@ -49,8 +49,8 @@ export function PromptComposer({ value, onChange, onSend, onStop, isGenerating, 
     <div className="flex flex-col gap-2">
       <div
         className={cn(
-          "relative rounded-xl border border-input bg-background shadow-md transition-[border-color,box-shadow] duration-150",
-          isFocused && "ring-gradient-animated border-transparent shadow-glow",
+          "relative rounded-lg border border-input bg-card shadow-xs transition-[border-color,box-shadow] duration-150",
+          isFocused && "border-ring ring-[3px] ring-ring/20",
           isDragOver && "border-primary ring-[3px] ring-primary/15",
         )}
         onDragOver={(e) => {

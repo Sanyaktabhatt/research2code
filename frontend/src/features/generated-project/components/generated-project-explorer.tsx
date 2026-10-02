@@ -41,7 +41,7 @@ interface MetaFieldProps {
 function MetaField({ label, value }: MetaFieldProps) {
   return (
     <div>
-      <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
+      <p className="section-label">{label}</p>
       <div className="text-sm">{value}</div>
     </div>
   );
@@ -163,7 +163,7 @@ export function GeneratedProjectExplorer({ projectId }: GeneratedProjectExplorer
 
   return (
     <div className="flex h-[calc(100vh-14rem)] min-h-[560px] flex-col gap-3">
-      <div className="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-border bg-card p-3.5 shadow-xs">
+      <div className="flex flex-wrap items-start justify-between gap-4 rounded-lg border border-border bg-card p-3.5 shadow-xs">
         <div className="grid flex-1 grid-cols-2 gap-3">
           <MetaField label="Version" value={`v${project.version}`} />
           <MetaField label="Generated" value={formatDateTime(project.created_at)} />
@@ -221,10 +221,10 @@ export function GeneratedProjectExplorer({ projectId }: GeneratedProjectExplorer
               <EmptyState icon={FileWarning} title="Couldn't load files" description={data.filesError ?? "The project archive couldn't be downloaded."} />
             ) : (
               <div className="flex h-full gap-3">
-                <aside className="w-64 shrink-0 overflow-hidden rounded-xl border border-border bg-muted/20 p-2">
+                <aside className="w-64 shrink-0 overflow-hidden rounded-lg border border-border bg-card p-2">
                   <RepositoryTree tree={tree} generatedProjectId={project.id} selectedPath={activePath} onSelectFile={handleSelectFile} />
                 </aside>
-                <div className="min-w-0 flex-1 overflow-hidden rounded-xl border border-border shadow-xs">
+                <div className="min-w-0 flex-1 overflow-hidden rounded-lg border border-border shadow-xs">
                   <CodeEditor openPaths={openPaths} activePath={activePath} files={data.files} onSelectTab={setActivePath} onCloseTab={handleCloseTab} />
                 </div>
               </div>

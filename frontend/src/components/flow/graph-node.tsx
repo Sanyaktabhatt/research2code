@@ -18,7 +18,7 @@ export const GraphNode = React.memo(function GraphNode({ data, selected }: NodeP
   return (
     <div
       className={cn(
-        "flex min-w-36 max-w-56 items-center gap-2 rounded-xl border-2 bg-card px-3 py-2 text-card-foreground transition-[opacity,transform,box-shadow] duration-200 hover:-translate-y-0.5",
+        "flex min-w-36 max-w-56 items-center gap-2 rounded-md border-2 bg-card px-3 py-2 text-card-foreground shadow-xs transition-[opacity,box-shadow] duration-150 hover:shadow-md",
         selected && "ring-2 ring-offset-2 ring-offset-background",
         data.matched && "ring-2 ring-warning ring-offset-2 ring-offset-background",
         data.dimmed ? "opacity-20" : "opacity-100",

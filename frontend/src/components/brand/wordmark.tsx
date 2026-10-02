@@ -6,17 +6,22 @@ interface WordmarkProps {
   size?: "sm" | "lg";
 }
 
-/** "Research" in neutral foreground, "Code" in the brand gradient - the two-tone treatment used everywhere the product name appears as text. */
+/**
+ * "Research" in the surrounding text color, "2Code" in the primary accent -
+ * the two-tone treatment used everywhere the product name appears as text.
+ * The first half inherits `currentColor` so the wordmark works on both the
+ * light canvas and the dark navigation rail.
+ */
 export function Wordmark({ className, size = "sm" }: WordmarkProps) {
   return (
     <span
       className={cn(
         "font-semibold tracking-tight text-foreground",
-        size === "sm" ? "text-[13px]" : "text-2xl",
+        size === "sm" ? "text-[14px]" : "text-2xl",
         className,
       )}
     >
-      Research<span className="text-gradient-brand">2Code</span>
+      Research<span className="text-primary">2Code</span>
     </span>
   );
 }
@@ -26,5 +31,5 @@ interface TaglineProps {
 }
 
 export function Tagline({ className }: TaglineProps) {
-  return <p className={cn("text-xs font-medium tracking-wide text-muted-foreground", className)}>From papers to production.</p>;
+  return <p className={cn("text-xs font-medium text-muted-foreground", className)}>From papers to production.</p>;
 }

@@ -115,12 +115,12 @@ export function LogViewer({ lines, isLive, downloadUrl }: LogViewerProps) {
         </Button>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-hidden rounded-lg border border-border bg-[#0b0b0b]">
+      <div className="min-h-0 flex-1 overflow-hidden rounded-lg border border-[hsl(220_30%_18%)] bg-[hsl(220_32%_9%)]">
         {displayedLines.length === 0 ? (
           <EmptyState
             title={lines.length === 0 ? "No logs yet" : "No lines match"}
             description={lines.length === 0 ? "Logs will appear here once the run starts." : "Try a different search term."}
-            className="h-full border-0 bg-transparent text-white/70"
+            className="h-full border-0 bg-transparent text-white/70 [&_p]:text-white/80 [&>div:first-child]:border-white/10 [&>div:first-child]:bg-white/5 [&>div:first-child]:text-white/60"
           />
         ) : (
           <VirtualizedList

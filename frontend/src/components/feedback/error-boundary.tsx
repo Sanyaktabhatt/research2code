@@ -43,10 +43,10 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 
 function DefaultErrorFallback({ error, reset }: { error: Error; reset: () => void }) {
   return (
-    <div role="alert" className="flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-destructive/40 bg-destructive/5 p-10 text-center">
-      <AlertTriangle className="size-8 text-destructive" aria-hidden="true" />
+    <div role="alert" className="flex flex-col items-center justify-center gap-3 rounded-md border border-destructive/30 border-l-4 border-l-destructive bg-destructive/[0.04] p-8 text-center">
+      <AlertTriangle className="size-6 text-destructive" aria-hidden="true" />
       <div>
-        <p className="font-medium text-foreground">Something went wrong</p>
+        <p className="text-sm font-semibold text-foreground">Something went wrong</p>
         <p className="mt-1 max-w-md text-sm text-muted-foreground">{error.message}</p>
       </div>
       <Button variant="outline" size="sm" onClick={reset}>

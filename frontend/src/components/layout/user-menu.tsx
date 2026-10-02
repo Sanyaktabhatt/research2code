@@ -26,8 +26,8 @@ export function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="rounded-full outline-none ring-ring focus-visible:ring-2">
-          <Avatar className="size-8">
+        <button className="rounded-full outline-none ring-ring ring-offset-2 ring-offset-background focus-visible:ring-2" aria-label="Account menu">
+          <Avatar className="size-7">
             <AvatarImage alt={displayName} />
             <AvatarFallback>{initials(displayName)}</AvatarFallback>
           </Avatar>

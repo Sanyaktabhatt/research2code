@@ -16,7 +16,7 @@ interface SummaryFieldProps {
 function SummaryField({ label, value }: SummaryFieldProps) {
   return (
     <div>
-      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
+      <p className="section-label">{label}</p>
       <div className="mt-0.5 text-sm">{value}</div>
     </div>
   );
@@ -58,7 +58,7 @@ export function GenerationSummary({ summary }: GenerationSummaryProps) {
         </div>
 
         <div>
-          <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">Training capabilities</p>
+          <p className="mb-2 section-label">Training capabilities</p>
           <div className="grid grid-cols-2 gap-2">
             <CapabilityFlag label="Mixed precision" enabled={summary.mixedPrecision} />
             <CapabilityFlag label="Distributed training" enabled={summary.distributedTraining} />

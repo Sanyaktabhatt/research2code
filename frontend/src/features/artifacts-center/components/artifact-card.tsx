@@ -18,13 +18,13 @@ export function ArtifactCard({ artifact, isSelected, onSelect }: ArtifactCardPro
       type="button"
       onClick={onSelect}
       className={cn(
-        "group flex flex-col items-start gap-2 rounded-xl border p-3 text-left transition-all duration-200",
+        "group flex flex-col items-start gap-2 rounded-lg border bg-card p-3 text-left transition-[border-color,background-color,box-shadow] duration-150",
         isSelected
-          ? "border-primary/50 bg-gradient-brand-soft shadow-glow"
+          ? "border-info bg-info/[0.05] ring-1 ring-info"
           : "border-border hover:-translate-y-0.5 hover:border-border-strong hover:bg-muted/50 hover:shadow-md",
       )}
     >
-      <div className="flex size-9 items-center justify-center rounded-md bg-gradient-brand-soft text-primary transition-transform duration-200 group-hover:scale-110">
+      <div className="flex size-9 items-center justify-center rounded-md border border-border bg-muted text-foreground/70">
         <Icon className="size-4.5" />
       </div>
       <p className="w-full truncate text-sm font-medium" title={artifact.fileName}>

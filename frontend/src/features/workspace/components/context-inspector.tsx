@@ -27,7 +27,7 @@ interface InspectorFieldProps {
 function InspectorField({ label, value }: InspectorFieldProps) {
   return (
     <div>
-      <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground/80">{label}</p>
+      <p className="section-label">{label}</p>
       <div className="mt-1 text-sm leading-relaxed">{value}</div>
     </div>
   );
@@ -72,7 +72,7 @@ export function ContextInspector({ project }: ContextInspectorProps) {
         <div className="space-y-6">
           <MetadataCard metadata={selection.metadata} focus={selection.focus} />
           <div className="border-t border-border pt-4">
-            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">Related knowledge</p>
+            <p className="section-label mb-2">Related knowledge</p>
             <KnowledgeSidebar knowledge={selection.relatedKnowledge} />
           </div>
         </div>
@@ -102,7 +102,7 @@ export function ContextInspector({ project }: ContextInspectorProps) {
           <InspectorField
             label="Properties"
             value={
-              <pre className="overflow-x-auto rounded-md bg-muted p-2 text-xs">
+              <pre className="overflow-x-auto rounded-md border border-border bg-muted p-2.5 font-mono text-xs">
                 {JSON.stringify(selection.properties, null, 2)}
               </pre>
             }
@@ -186,7 +186,7 @@ export function ContextInspector({ project }: ContextInspectorProps) {
             label="Resource summary"
             value={
               Object.keys(selection.resourceSummary).length > 0 ? (
-                <pre className="overflow-x-auto rounded-md bg-muted p-2 text-xs">
+                <pre className="overflow-x-auto rounded-md border border-border bg-muted p-2.5 font-mono text-xs">
                   {JSON.stringify(selection.resourceSummary, null, 2)}
                 </pre>
               ) : (

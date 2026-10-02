@@ -14,13 +14,13 @@ export function MinimapControls() {
         pannable
         zoomable
         position="bottom-right"
-        className="!rounded-xl !border !border-border/60 !bg-card/80 !shadow-lg !backdrop-blur-xl"
+        className="!rounded-md !border !border-border !bg-card !shadow-md"
         maskColor="hsl(var(--background) / 0.6)"
         nodeColor={minimapNodeColor}
       />
       <Controls
         position="bottom-left"
-        className="!overflow-hidden !rounded-xl !border !border-border/60 !bg-card/80 !shadow-lg !backdrop-blur-xl [&>button]:!border-border/60 [&>button]:!bg-transparent [&>button]:!text-foreground [&>button:hover]:!bg-accent"
+        className="!overflow-hidden !rounded-md !border !border-border !bg-card !shadow-md [&>button]:!border-border [&>button]:!bg-transparent [&>button]:!text-foreground [&>button:hover]:!bg-accent"
         showInteractive={false}
       />
     </>

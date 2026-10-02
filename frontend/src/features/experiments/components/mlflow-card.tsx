@@ -35,7 +35,7 @@ export function MLflowCard({ run }: MLflowCardProps) {
 
         {params.length > 0 && (
           <div>
-            <p className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">Parameters</p>
+            <p className="mb-1 section-label">Parameters</p>
             <div className="flex flex-wrap gap-1">
               {params.slice(0, 12).map(([key, value]) => (
                 <Badge key={key} variant="outline" className="font-mono text-[10px]">
@@ -49,7 +49,7 @@ export function MLflowCard({ run }: MLflowCardProps) {
 
         {metrics.length > 0 && (
           <div>
-            <p className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">Metrics</p>
+            <p className="mb-1 section-label">Metrics</p>
             <div className="flex flex-wrap gap-1">
               {metrics.map(([key, value]) => (
                 <Badge key={key} variant="secondary" className="font-mono text-[10px]">

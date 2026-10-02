@@ -61,7 +61,7 @@ export function ArtifactPanel({ run, logDownloadUrl }: ArtifactPanelProps) {
               const Icon = CATEGORY_ICONS[category];
               return (
                 <div key={category}>
-                  <p className="mb-1.5 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  <p className="mb-1.5 flex items-center gap-1.5 section-label">
                     <Icon className="size-3.5" />
                     {CATEGORY_LABELS[category]} ({groups[category].length})
                   </p>

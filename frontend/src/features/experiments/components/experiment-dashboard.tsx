@@ -108,7 +108,7 @@ export function ExperimentDashboard({ projectId }: ExperimentDashboardProps) {
 
   return (
     <div className="flex h-[calc(100vh-14rem)] min-h-[560px] flex-col gap-3 lg:flex-row">
-      <aside className="max-h-64 w-full shrink-0 overflow-hidden rounded-xl border border-border bg-muted/20 p-2 lg:h-full lg:max-h-none lg:w-72">
+      <aside className="max-h-64 w-full shrink-0 overflow-hidden rounded-lg border border-border bg-card p-2 lg:h-full lg:max-h-none lg:w-72">
         <RunList
           runs={data.runs}
           selectedRunId={selectedEnriched?.id ?? null}
@@ -118,7 +118,7 @@ export function ExperimentDashboard({ projectId }: ExperimentDashboardProps) {
         />
       </aside>
 
-      <div className="min-h-0 min-w-0 flex-1 rounded-xl border border-border bg-card p-4 shadow-xs">
+      <div className="min-h-0 min-w-0 flex-1 rounded-lg border border-border bg-card p-4 shadow-xs">
         {!selectedEnriched ? (
           <EmptyState icon={FlaskConical} title="Select a run" description="Choose an execution run from the list to see its details." />
         ) : (

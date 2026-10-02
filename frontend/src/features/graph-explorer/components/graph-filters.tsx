@@ -42,7 +42,7 @@ export function GraphFilters({ filters, onChange, availableNodeTypes, availableR
         <Button variant="outline" size="sm" className="gap-2">
           <Filter className="size-4" />
           Filters
-          {activeCount > 0 && <span className="rounded-full bg-primary px-1.5 text-xs text-primary-foreground">{activeCount}</span>}
+          {activeCount > 0 && <span className="rounded-sm bg-info px-1.5 text-[11px] font-semibold text-info-foreground">{activeCount}</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent align="start" className="w-80 space-y-4">

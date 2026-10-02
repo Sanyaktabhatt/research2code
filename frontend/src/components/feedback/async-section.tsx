@@ -35,7 +35,7 @@ function SectionError({ error, label, onRetry }: { error: Error; label?: string;
   const detail = ApiError.isApiError(error) ? error.detail : error.message;
 
   return (
-    <div role="alert" className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-destructive/40 bg-destructive/5 p-6 text-center">
+    <div role="alert" className="flex flex-col items-center justify-center gap-2 rounded-md border border-destructive/30 border-l-4 border-l-destructive bg-destructive/[0.04] p-5 text-center">
       <p className="text-sm font-medium text-foreground">
         Couldn&apos;t load {label ?? "this section"}
       </p>
@@ -43,7 +43,7 @@ function SectionError({ error, label, onRetry }: { error: Error; label?: string;
       <button
         type="button"
         onClick={onRetry}
-        className="rounded text-xs font-medium text-primary underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        className="rounded text-xs font-medium text-info underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
         Try again
       </button>

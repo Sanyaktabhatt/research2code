@@ -1,13 +1,13 @@
 import type { LucideIcon } from "lucide-react";
 import {
-  Archive,
-  Boxes,
+  BrainCircuit,
   FileText,
   FlaskConical,
+  FolderCode,
   LayoutDashboard,
-  MessagesSquare,
-  Share2,
-  Sparkles,
+  MessageSquareText,
+  Network,
+  Package,
 } from "lucide-react";
 
 export interface WorkspaceTab {
@@ -24,12 +24,12 @@ export interface WorkspaceTab {
 export const WORKSPACE_TABS: WorkspaceTab[] = [
   { id: "overview", label: "Overview", segment: null, icon: LayoutDashboard, shortcut: 1 },
   { id: "paper", label: "Paper", segment: "papers", icon: FileText, shortcut: 2 },
-  { id: "knowledge", label: "Knowledge", segment: "knowledge", icon: Sparkles, shortcut: 3 },
-  { id: "graph", label: "Knowledge Graph", segment: "graph", icon: Share2, shortcut: 4 },
-  { id: "ai-assistant", label: "AI Assistant", segment: "rag", icon: MessagesSquare, shortcut: 5 },
-  { id: "generated-project", label: "Generated Project", segment: "codegen", icon: Boxes, shortcut: 6 },
+  { id: "knowledge", label: "Knowledge", segment: "knowledge", icon: BrainCircuit, shortcut: 3 },
+  { id: "graph", label: "Knowledge Graph", segment: "graph", icon: Network, shortcut: 4 },
+  { id: "ai-assistant", label: "AI Assistant", segment: "rag", icon: MessageSquareText, shortcut: 5 },
+  { id: "generated-project", label: "Generated Project", segment: "codegen", icon: FolderCode, shortcut: 6 },
   { id: "experiments", label: "Experiments", segment: "runs", icon: FlaskConical, shortcut: 7 },
-  { id: "artifacts", label: "Artifacts", segment: "artifacts", icon: Archive, shortcut: 8 },
+  { id: "artifacts", label: "Artifacts", segment: "artifacts", icon: Package, shortcut: 8 },
 ];
 
 export function workspaceTabHref(projectId: string, tab: WorkspaceTab): string {

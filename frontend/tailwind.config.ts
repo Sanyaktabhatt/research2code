@@ -48,7 +48,12 @@ const config: Config = {
         foreground: "hsl(var(--foreground))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
+          hover: "hsl(var(--primary-hover))",
           foreground: "hsl(var(--primary-foreground))",
+        },
+        info: {
+          DEFAULT: "hsl(var(--info))",
+          foreground: "hsl(var(--info-foreground))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -127,10 +132,11 @@ const config: Config = {
         },
       },
       borderRadius: {
-        xl: "calc(var(--radius) + 6px)",
+        "2xl": "calc(var(--radius) + 4px)",
+        xl: "calc(var(--radius) + 2px)",
         lg: "var(--radius)",
-        md: "calc(var(--radius) - 3px)",
-        sm: "calc(var(--radius) - 5px)",
+        md: "calc(var(--radius) - 1px)",
+        sm: "calc(var(--radius) - 3px)",
       },
       boxShadow: {
         xs: "var(--shadow-xs)",
