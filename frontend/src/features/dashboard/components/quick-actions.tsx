@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 const ACTIONS = [
   { href: "/projects/new", label: "New project", icon: FolderPlus, primary: true },
   { href: "/projects", label: "Browse projects", icon: LayoutGrid },
-  { href: "/projects", label: "Explore a graph", icon: Share2 },
+  { href: "/graph", label: "Explore a graph", icon: Share2 },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 

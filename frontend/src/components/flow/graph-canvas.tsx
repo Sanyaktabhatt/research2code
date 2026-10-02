@@ -30,6 +30,8 @@ interface GraphCanvasProps {
   onSelectionChange?: OnSelectionChangeFunc<FlowNode, FlowEdge>;
   onInit?: (instance: ReactFlowInstance<FlowNode, FlowEdge>) => void;
   defaultViewport?: Viewport;
+  /** Skip rendering off-screen nodes/edges - worth enabling for large graphs. */
+  onlyRenderVisibleElements?: boolean;
   children?: React.ReactNode;
 }
 
@@ -51,6 +53,7 @@ export function GraphCanvas({
   onSelectionChange,
   onInit,
   defaultViewport,
+  onlyRenderVisibleElements = false,
   children,
 }: GraphCanvasProps) {
   return (
@@ -68,6 +71,7 @@ export function GraphCanvas({
         onSelectionChange={onSelectionChange}
         onInit={onInit}
         defaultViewport={defaultViewport}
+        onlyRenderVisibleElements={onlyRenderVisibleElements}
         minZoom={0.05}
         maxZoom={2.5}
         panOnScroll

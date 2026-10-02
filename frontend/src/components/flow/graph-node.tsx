@@ -43,6 +43,12 @@ export const GraphNode = React.memo(function GraphNode({ data, selected }: NodeP
           {data.name}
         </p>
         <p className="truncate text-[10px] text-muted-foreground">{style.label}</p>
+        {data.project && (
+          <p className="mt-0.5 flex items-center gap-1 truncate text-[10px] text-muted-foreground" title={data.project.name}>
+            <span className="size-1.5 shrink-0 rounded-full" style={{ backgroundColor: data.project.color }} aria-hidden="true" />
+            <span className="truncate">{data.project.name}</span>
+          </p>
+        )}
       </div>
       <Handle type="source" position={Position.Bottom} className="!bg-muted-foreground" />
     </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { FileText, FolderGit2, LayoutDashboard, Moon, Settings, Sun, Workflow } from "lucide-react";
+import { FileText, FolderGit2, LayoutDashboard, Moon, Network, Settings, Sun, Workflow } from "lucide-react";
 import { useTheme } from "next-themes";
 import {
   CommandDialog,
@@ -53,6 +53,10 @@ export function CommandPalette() {
           <CommandItem onSelect={() => go("/projects")}>
             <Workflow />
             All projects
+          </CommandItem>
+          <CommandItem onSelect={() => go("/graph")}>
+            <Network />
+            Knowledge graph explorer
           </CommandItem>
           <CommandItem onSelect={() => go("/settings")}>
             <Settings />

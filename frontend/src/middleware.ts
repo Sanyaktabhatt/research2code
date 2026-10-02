@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { AUTH_TOKEN_COOKIE } from "@/config/constants";
 
 const AUTH_ROUTES = ["/login", "/signup"];
-const PROTECTED_PREFIXES = ["/dashboard", "/projects", "/settings"];
+const PROTECTED_PREFIXES = ["/dashboard", "/projects", "/graph", "/settings"];
 
 /**
  * Cheap edge-level gate only: it checks for a session-presence cookie, not
@@ -32,5 +32,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/projects/:path*", "/settings/:path*", "/login", "/signup"],
+  matcher: ["/dashboard/:path*", "/projects/:path*", "/graph/:path*", "/settings/:path*", "/login", "/signup"],
 };

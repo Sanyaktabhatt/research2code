@@ -24,16 +24,17 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-1">
-        <h1 className="text-xl font-semibold tracking-tight">Log in</h1>
-        <p className="text-sm text-muted-foreground">Welcome back to Research2Code.</p>
+    <div className="space-y-7">
+      <div className="space-y-1.5">
+        <h1 className="text-2xl font-semibold tracking-tight">Sign in</h1>
+        <p className="text-[15px] text-muted-foreground">Welcome back to Research2Code.</p>
       </div>
 
-      <form className="space-y-4" onSubmit={handleSubmit}>
+      <form className="space-y-5" onSubmit={handleSubmit}>
         <div className="space-y-1.5">
           <Label htmlFor="email">Email</Label>
           <Input
+            className="h-10 text-[15px]"
             id="email"
             type="email"
             required
@@ -45,6 +46,7 @@ export default function LoginPage() {
         <div className="space-y-1.5">
           <Label htmlFor="password">Password</Label>
           <Input
+            className="h-10 text-[15px]"
             id="password"
             type="password"
             required
@@ -64,18 +66,18 @@ export default function LoginPage() {
           </p>
         )}
 
-        <Button type="submit" className="w-full" disabled={login.isPending}>
+        <Button type="submit" size="lg" className="w-full text-[15px]" disabled={login.isPending}>
           {login.isPending && <Loader2 className="animate-spin" aria-hidden="true" />}
-          {login.isPending ? "Logging in…" : "Log in"}
+          {login.isPending ? "Signing in…" : "Sign in"}
         </Button>
       </form>
 
       <OAuthButtons />
 
       <p className="border-t border-border pt-5 text-center text-sm text-muted-foreground">
-        Don&apos;t have an account?{" "}
+        New to Research2Code?{" "}
         <Link href="/signup" className="font-medium text-info underline-offset-2 hover:underline">
-          Sign up
+          Create an account
         </Link>
       </p>
     </div>

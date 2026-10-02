@@ -70,6 +70,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 function useDashboardBreadcrumbs(pathname: string, projectId: string | undefined): Breadcrumb[] {
   if (pathname.startsWith("/settings")) return [{ label: "Settings" }];
   if (pathname.startsWith("/dashboard")) return [{ label: "Dashboard" }];
+  if (pathname.startsWith("/graph")) return [{ label: "Knowledge Graph Explorer" }];
   // Project name + active tab are shown by WorkspaceHeader inside the
   // workspace itself, so the outer chrome only needs to place you in
   // "Projects" - repeating them here would just duplicate that UI.
