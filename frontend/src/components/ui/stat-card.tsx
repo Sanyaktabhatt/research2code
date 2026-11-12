@@ -38,17 +38,17 @@ interface StatCardProps {
 export function StatCard({ label, value, icon: Icon, accent = "neutral", trend, className }: StatCardProps) {
   return (
     <motion.div {...hoverLift}>
-      <Card className={cn("overflow-hidden", className)}>
+      <Card className={cn("interactive-surface overflow-hidden", className)}>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1.5">
           <CardTitle className="text-[13px] font-medium text-muted-foreground">{label}</CardTitle>
           {Icon && (
-            <div className={cn("flex size-8 items-center justify-center rounded-xl", ACCENT_CLASSES[accent])} aria-hidden="true">
+            <div className={cn("flex size-8 items-center justify-center rounded-md", ACCENT_CLASSES[accent])} aria-hidden="true">
               <Icon className="size-4" strokeWidth={1.75} />
             </div>
           )}
         </CardHeader>
         <CardContent>
-          <div className="text-[1.625rem] font-semibold leading-tight tracking-tight tabular-nums text-foreground">
+          <div className="text-[2rem] font-semibold leading-tight tracking-[-0.03em] tabular-nums text-foreground">
             {typeof value === "number" ? <AnimatedCounter value={value} /> : value}
           </div>
           {trend && (

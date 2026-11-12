@@ -1,10 +1,8 @@
 "use client";
 
-import { LayoutDashboard, Search } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthGuard } from "@/hooks/use-auth-guard";
-import { useUiStore } from "@/stores/ui-store";
+import { QuickActions } from "@/features/dashboard/components/quick-actions";
 
 function greeting(): string {
   const hour = new Date().getHours();
@@ -13,38 +11,29 @@ function greeting(): string {
   return "Good evening";
 }
 
-/** The dashboard's page header - greeting, context line and global search entry point. Everything below this is detail. */
+const DATE_FORMAT = new Intl.DateTimeFormat(undefined, { weekday: "long", month: "long", day: "numeric" });
+
+/** The dashboard's page header - date, greeting and the primary actions. Global search lives in the top bar. */
 export function DashboardHeader() {
   const { data: user, isLoading } = useAuthGuard();
-  const setCommandPaletteOpen = useUiStore((s) => s.setCommandPaletteOpen);
 
   return (
-    <div className="page-header">
+    <div className="flex flex-col gap-5 border-b border-border pb-6 lg:flex-row lg:items-end lg:justify-between">
       <div className="min-w-0">
-        <p className="section-label flex items-center gap-1.5">
-          <LayoutDashboard className="size-3" aria-hidden="true" />
-          Research workspace
+        <p className="font-mono text-xs text-muted-foreground" suppressHydrationWarning>
+          {DATE_FORMAT.format(new Date())}
         </p>
         {isLoading ? (
-          <Skeleton className="mt-2 h-8 w-64" />
+          <Skeleton className="mt-2 h-9 w-72" />
         ) : (
-          <h1 className="page-title mt-1.5">
+          <h1 className="mt-1.5 text-[2rem] font-semibold leading-tight tracking-[-0.03em]">
             {greeting()}
             {user ? `, ${(user.full_name ?? user.email).split(" ")[0]}` : ""}
           </h1>
         )}
-        <p className="page-description">Here&apos;s what&apos;s happening across your research projects.</p>
+        <p className="mt-1 text-sm text-muted-foreground">Here&apos;s what&apos;s happening across your research projects.</p>
       </div>
-
-      <Button
-        variant="outline"
-        className="justify-start gap-2 font-normal text-muted-foreground sm:w-72"
-        onClick={() => setCommandPaletteOpen(true)}
-      >
-        <Search className="size-4" />
-        Search projects, papers, runs…
-        <kbd className="ml-auto rounded-sm border border-border bg-muted px-1.5 py-px font-mono text-[10px] font-medium text-muted-foreground">⌘K</kbd>
-      </Button>
+      <QuickActions />
     </div>
   );
 }

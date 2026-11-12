@@ -1,27 +1,31 @@
 import Link from "next/link";
 import { Logo } from "@/components/brand/wordmark";
-import { EquationPanel } from "@/features/auth/components/equation-panel";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { FloatingFragments } from "@/features/auth/components/floating-fragments";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="grid min-h-svh bg-background lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
-      {/* Brand panel - desktop only; phones get the compact logo above the form. */}
-      <aside className="hidden flex-col justify-between bg-[#111] px-12 py-10 lg:flex xl:px-16">
-        <Link href="/" className="w-fit rounded-md outline-none focus-visible:ring-2 focus-visible:ring-white" aria-label="Research2Code home">
-          <Logo size="md" variant="onDark" />
-        </Link>
-        <EquationPanel />
-        <p className="font-mono text-[11px] text-white/40">From research papers to reproducible experiments.</p>
-      </aside>
+    <div className="relative flex min-h-svh flex-col overflow-hidden bg-background">
+      <FloatingFragments />
 
-      <main className="flex flex-col px-4 py-8 sm:px-8">
-        <Link href="/" className="w-fit rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring lg:hidden" aria-label="Research2Code home">
-          <Logo size="md" />
+      <header className="relative z-10 flex justify-end px-5 py-5 sm:px-8">
+        <ThemeToggle />
+      </header>
+
+      <main className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 pb-10">
+        <Link
+          href="/"
+          className="rise mb-8 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          aria-label="Research2Code home"
+        >
+          <Logo size="lg" />
         </Link>
-        <div className="flex flex-1 items-center justify-center py-10">
-          <div className="rise w-full max-w-[380px]">{children}</div>
-        </div>
+        <div style={{ "--i": 1 } as React.CSSProperties} className="rise w-full max-w-[400px] border border-border bg-card/95 p-7 shadow-lg backdrop-blur-sm sm:p-9">{children}</div>
       </main>
+
+      <footer className="relative z-10 px-5 pb-6 text-center font-mono text-[11px] text-muted-foreground sm:px-8">
+        From research papers to reproducible experiments.
+      </footer>
     </div>
   );
 }

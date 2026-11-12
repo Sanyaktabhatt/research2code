@@ -4,26 +4,51 @@ import * as React from "react";
 import { cn } from "@/lib/utils/cn";
 
 /**
- * Landing-page specimen: a passage from "Attention Is All You Need" beside the
- * PyTorch it becomes. Each term of Eq. (1) is paired with the line that
- * implements it; the pairs cycle on their own and follow the pointer on hover.
- * Static markup, captioned as illustrative.
+ * Landing-page specimen: Algorithm 1 from "Adam: A Method for Stochastic
+ * Optimization" beside the PyTorch it becomes. Each update rule is paired
+ * with the line that implements it; the pairs cycle on their own and follow
+ * the pointer on hover. Static markup, captioned as illustrative.
  */
 
-type Term = 0 | 1 | 2 | 3;
+const STEPS = 5;
 
-const CODE: Array<{ text: React.ReactNode; term?: Term }> = [
-  { text: <><K>import</K> math</> },
+/** Algorithm 1's update rules, in the paper's notation. */
+const RULES: Array<{ lhs: React.ReactNode; rhs: React.ReactNode }> = [
+  {
+    lhs: <>m<sub>t</sub></>,
+    rhs: <>β<sub>1</sub> · m<sub>t−1</sub> + (1 − β<sub>1</sub>) · g<sub>t</sub></>,
+  },
+  {
+    lhs: <>v<sub>t</sub></>,
+    rhs: <>β<sub>2</sub> · v<sub>t−1</sub> + (1 − β<sub>2</sub>) · g<sub>t</sub><sup>2</sup></>,
+  },
+  {
+    lhs: <>m̂<sub>t</sub></>,
+    rhs: <>m<sub>t</sub> / (1 − β<sub>1</sub><sup>t</sup>)</>,
+  },
+  {
+    lhs: <>v̂<sub>t</sub></>,
+    rhs: <>v<sub>t</sub> / (1 − β<sub>2</sub><sup>t</sup>)</>,
+  },
+  {
+    lhs: <>θ<sub>t</sub></>,
+    rhs: <>θ<sub>t−1</sub> − α · m̂<sub>t</sub> / (√v̂<sub>t</sub> + ε)</>,
+  },
+];
+
+const CODE: Array<{ text: React.ReactNode; step?: number }> = [
+  { text: <><K>import</K> torch</> },
   { text: "" },
-  { text: <><K>def</K> <F>scaled_dot_product_attention</F>(q, k, v, mask=<K>None</K>):</> },
-  { text: <>{"    "}<C>{'"""Eq. (1) — Vaswani et al., 2017, §3.2.1"""'}</C></> },
-  { text: <>{"    "}d_k = q.size(-1)</> },
-  { text: <>{"    "}scores = q @ k.transpose(-2, -1)</>, term: 0 },
-  { text: <>{"    "}scores = scores / math.sqrt(d_k)</>, term: 1 },
-  { text: <>{"    "}<K>if</K> mask <K>is not None</K>:</> },
-  { text: <>{"        "}scores = scores.masked_fill(mask == 0, <F>float</F>(<C>&quot;-inf&quot;</C>))</> },
-  { text: <>{"    "}weights = scores.softmax(dim=-1)</>, term: 2 },
-  { text: <>{"    "}<K>return</K> weights @ v</>, term: 3 },
+  { text: <><K>@</K>torch.no_grad()</> },
+  { text: <><K>def</K> <F>adam_step</F>(p, state, lr=1e-3, b1=0.9, b2=0.999, eps=1e-8):</> },
+  { text: <>{"    "}<C>{'"""Algorithm 1 — Kingma & Ba, 2015, p.2"""'}</C></> },
+  { text: <>{"    "}g = p.grad</> },
+  { text: <>{"    "}state.t += 1</> },
+  { text: <>{"    "}state.m.mul_(b1).add_(g, alpha=1 - b1)</>, step: 0 },
+  { text: <>{"    "}state.v.mul_(b2).addcmul_(g, g, value=1 - b2)</>, step: 1 },
+  { text: <>{"    "}m_hat = state.m / (1 - b1 ** state.t)</>, step: 2 },
+  { text: <>{"    "}v_hat = state.v / (1 - b2 ** state.t)</>, step: 3 },
+  { text: <>{"    "}p.sub_(lr * m_hat / (v_hat.sqrt() + eps))</>, step: 4 },
 ];
 
 function K({ children }: { children: React.ReactNode }) {
@@ -37,79 +62,75 @@ function C({ children }: { children: React.ReactNode }) {
 }
 
 export function PaperToCode({ className }: { className?: string }) {
-  const [active, setActive] = React.useState<Term>(0);
+  const [active, setActive] = React.useState(0);
   const [paused, setPaused] = React.useState(false);
 
   React.useEffect(() => {
     if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const id = window.setInterval(() => setActive((t) => (((t + 1) % 4) as Term)), 2200);
+    const id = window.setInterval(() => setActive((t) => (t + 1) % STEPS), 2000);
     return () => window.clearInterval(id);
   }, [paused]);
 
-  const term = (t: Term, children: React.ReactNode, extra?: string) => (
-    <span
-      onMouseEnter={() => {
-        setPaused(true);
-        setActive(t);
-      }}
-      onMouseLeave={() => setPaused(false)}
-      className={cn(
-        "cursor-default rounded-[2px] px-[1px] transition-colors duration-300",
-        active === t ? "bg-[hsl(var(--highlight))]" : "bg-transparent",
-        extra,
-      )}
-    >
-      {children}
-    </span>
-  );
+  const hover = (step: number) => ({
+    onMouseEnter: () => {
+      setPaused(true);
+      setActive(step);
+    },
+    onMouseLeave: () => setPaused(false),
+  });
 
   return (
     <figure className={cn("w-full", className)}>
       <div className="grid overflow-hidden border border-foreground lg:grid-cols-2">
         {/* The paper */}
-        <div className="bg-card px-6 py-7 sm:px-10 sm:py-10" style={{ fontFamily: "'Times New Roman', Times, 'Nimbus Roman', serif" }}>
-          <div className="mb-6 flex items-baseline justify-between font-sans text-[11px] text-muted-foreground">
-            <span className="font-mono">arXiv:1706.03762</span>
-            <span className="font-mono">p. 4</span>
+        <div className="bg-card px-6 py-7 sm:px-10 sm:py-9" style={{ fontFamily: "'Times New Roman', Times, 'Nimbus Roman', serif" }}>
+          <div className="mb-5 flex items-baseline justify-between font-sans text-[11px] text-muted-foreground">
+            <span className="font-mono">arXiv:1412.6980</span>
+            <span className="font-mono">p. 2</span>
           </div>
-          <h3 className="text-[19px] font-bold tracking-normal">3.2.1&nbsp;&nbsp;Scaled Dot-Product Attention</h3>
-          <p className="mt-3 text-[17px] leading-[1.55] text-foreground/90">
-            We call our particular attention &ldquo;Scaled Dot-Product Attention&rdquo;. The input consists of queries and keys
-            of dimension <i>d</i><sub>k</sub>, and values of dimension <i>d</i><sub>v</sub>. We compute the dot products of the
-            query with all keys, divide each by √<i>d</i><sub>k</sub>, and apply a softmax function to obtain the weights on the
-            values.
+          <p className="text-[16px] leading-[1.5] text-foreground/90">
+            <b>Algorithm 1:</b> <i>Adam</i>, our proposed algorithm for stochastic optimization. Good default settings for the
+            tested machine learning problems are α = 0.001, β<sub>1</sub> = 0.9, β<sub>2</sub> = 0.999 and ε = 10<sup>−8</sup>.
           </p>
 
-          <div className="my-7 flex items-center justify-center gap-6 text-[21px]">
-            <span className="flex items-center gap-1.5">
-              <span>Attention(<i>Q</i>, <i>K</i>, <i>V</i>) =</span>
-              {term(2, <span>softmax</span>)}
-              <span className="text-[26px] font-light leading-none">(</span>
-              <span className="inline-flex flex-col items-center leading-tight">
-                {term(0, <span><i>QK</i><sup className="text-[13px]">T</sup></span>, "border-b border-foreground pb-0.5")}
-                {term(1, <span className="mt-0.5 inline-block">√<span className="border-t border-foreground"><i>d</i><sub className="text-[13px]">k</sub></span></span>)}
-              </span>
-              <span className="text-[26px] font-light leading-none">)</span>
-              {term(3, <i>V</i>)}
-            </span>
-            <span className="text-[17px]">(1)</span>
+          <div className="mt-5 border-y border-foreground py-3 text-[16.5px] leading-[1.95]">
+            <p className="text-foreground/70">
+              <b className="text-foreground">while</b> θ<sub>t</sub> not converged <b className="text-foreground">do</b>
+            </p>
+            <p className="pl-5 text-foreground/70">
+              t ← t + 1; &nbsp;g<sub>t</sub> ← ∇<sub>θ</sub>f<sub>t</sub>(θ<sub>t−1</sub>)
+            </p>
+            {RULES.map((rule, i) => (
+              <p key={i} className="pl-5" {...hover(i)}>
+                <span
+                  className={cn(
+                    "cursor-default rounded-[2px] px-1 transition-colors duration-300",
+                    active === i ? "bg-[hsl(var(--highlight))] text-[#111]" : "bg-transparent",
+                  )}
+                >
+                  <i>{rule.lhs}</i> ← <i>{rule.rhs}</i>
+                </span>
+              </p>
+            ))}
+            <p className="text-foreground/70">
+              <b className="text-foreground">end while</b>
+            </p>
           </div>
         </div>
 
         {/* The code */}
         <div className="border-t border-foreground bg-[#111] font-mono text-[12.5px] leading-[1.8] text-[#e6e6e6] lg:border-l lg:border-t-0">
           <div className="flex items-center justify-between border-b border-white/10 px-4 py-2.5 text-[11px] text-[#8a8a8a]">
-            <span>model/attention.py</span>
+            <span>optim/adam.py</span>
             <span>generated</span>
           </div>
           <pre className="overflow-x-auto py-4">
             {CODE.map((line, i) => {
-              const on = line.term !== undefined && line.term === active;
+              const on = line.step !== undefined && line.step === active;
               return (
                 <div
                   key={i}
-                  onMouseEnter={line.term !== undefined ? () => (setPaused(true), setActive(line.term!)) : undefined}
-                  onMouseLeave={line.term !== undefined ? () => setPaused(false) : undefined}
+                  {...(line.step !== undefined ? hover(line.step) : {})}
                   className={cn(
                     "flex border-l-2 pr-4 transition-colors duration-300",
                     on ? "border-[hsl(var(--highlight))] bg-white/[0.07]" : "border-transparent",
@@ -124,7 +145,7 @@ export function PaperToCode({ className }: { className?: string }) {
         </div>
       </div>
       <figcaption className="mt-3 flex flex-wrap justify-between gap-2 text-xs text-muted-foreground">
-        <span>Vaswani et al., &ldquo;Attention Is All You Need&rdquo; (2017), and the code it becomes. Hover a term.</span>
+        <span>Kingma &amp; Ba, &ldquo;Adam: A Method for Stochastic Optimization&rdquo; (ICLR 2015), and the code it becomes. Hover a line.</span>
         <span>Illustrative example</span>
       </figcaption>
     </figure>

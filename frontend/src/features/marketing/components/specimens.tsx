@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils/cn";
 
 /**
  * Static, illustrative product specimens for the landing page - each mirrors
- * a real workspace tab using the Attention paper as the running example.
+ * a real workspace tab using the Adam paper as the running example.
  */
 
 function Frame({ title, meta, dark = false, children }: { title: string; meta?: string; dark?: boolean; children: React.ReactNode }) {
@@ -24,13 +24,13 @@ function Frame({ title, meta, dark = false, children }: { title: string; meta?: 
 }
 
 const EXTRACTED = [
-  { field: "Task", value: "Machine translation", confidence: 0.98 },
-  { field: "Dataset", value: "WMT 2014 English–German", confidence: 0.96 },
-  { field: "Architecture", value: "Encoder–decoder, 6 + 6 layers, 8 heads", confidence: 0.93 },
-  { field: "d_model", value: "512", confidence: 0.97 },
-  { field: "Optimizer", value: "Adam, β₁ = 0.9, β₂ = 0.98", confidence: 0.91 },
-  { field: "LR schedule", value: "Linear warmup, 4000 steps, then inverse sqrt", confidence: 0.84 },
-  { field: "Regularization", value: "Dropout 0.1, label smoothing 0.1", confidence: 0.88 },
+  { field: "Task", value: "First-order stochastic optimization", confidence: 0.97 },
+  { field: "Datasets", value: "MNIST, IMDB, CIFAR-10", confidence: 0.94 },
+  { field: "Defaults", value: "α = 0.001, β₁ = 0.9, β₂ = 0.999, ε = 10⁻⁸", confidence: 0.98 },
+  { field: "CNN", value: "c64-c64-c128-1000, 5×5 conv, 3×3 max-pool stride 2", confidence: 0.86 },
+  { field: "Minibatch", value: "128", confidence: 0.9 },
+  { field: "Regularization", value: "Dropout on input and fully connected layer", confidence: 0.82 },
+  { field: "Baselines", value: "SGD with Nesterov momentum, AdaGrad, RMSProp", confidence: 0.89 },
 ];
 
 export function ExtractionSpecimen() {
@@ -65,7 +65,7 @@ export function ExtractionSpecimen() {
 
 function Cite({ children }: { children: React.ReactNode }) {
   return (
-    <span className="mx-0.5 inline-block cursor-default border border-foreground px-1 align-[1px] font-mono text-[10.5px] leading-4 transition-colors hover:bg-[hsl(var(--highlight))]">
+    <span className="mx-0.5 inline-block cursor-default border border-foreground px-1 align-[1px] font-mono text-[10.5px] leading-4 transition-colors hover:bg-[hsl(var(--highlight))] hover:text-[#111]">
       {children}
     </span>
   );
@@ -75,18 +75,17 @@ export function AssistantSpecimen() {
   return (
     <Frame title="ai assistant" meta="grounded in this paper">
       <div className="space-y-5 p-5 text-[14px] leading-relaxed">
-        <p className="ml-auto w-fit max-w-[85%] bg-muted px-3.5 py-2.5">Why do they scale the dot products by √d_k?</p>
+        <p className="ml-auto w-fit max-w-[85%] bg-muted px-3.5 py-2.5">Why does Adam need a bias correction?</p>
         <div className="max-w-[92%] space-y-2.5">
           <p>
-            For large d_k the dot products grow large in magnitude, pushing the softmax into regions with extremely small
-            gradients. Dividing by √d_k counteracts this
-            <Cite>§3.2.1 · p.4</Cite>.
+            The moment estimates m and v are initialized as vectors of zeros, so they are biased towards zero, especially
+            during the first steps and when the decay rates are close to 1
+            <Cite>§2 · p.2</Cite>.
           </p>
           <p>
-            The authors note that additive attention outperforms unscaled dot-product attention for larger d_k, which
-            motivated the scaling factor
-            <Cite>§3.2.1 · p.4</Cite>
-            <Cite>fn. 4 · p.4</Cite>.
+            Dividing by (1 − β<sup>t</sup>) counteracts that initialization bias, so the effective step size stays well
+            behaved from the very first update
+            <Cite>§3 · p.3</Cite>.
           </p>
         </div>
         <p className="border-t border-border pt-3 font-mono text-[11px] text-muted-foreground">
@@ -98,10 +97,10 @@ export function AssistantSpecimen() {
 }
 
 const TREE: Array<{ path: string; depth: number; source?: "paper" | "template" }> = [
-  { path: "transformer-wmt14/", depth: 0 },
+  { path: "adam-cifar10/", depth: 0 },
+  { path: "optim/adam.py", depth: 1, source: "paper" },
   { path: "model.py", depth: 1, source: "paper" },
   { path: "dataset.py", depth: 1, source: "paper" },
-  { path: "loss.py", depth: 1, source: "paper" },
   { path: "metrics.py", depth: 1, source: "paper" },
   { path: "train.py", depth: 1, source: "template" },
   { path: "config.yaml", depth: 1, source: "template" },
@@ -121,7 +120,7 @@ export function ProjectSpecimen() {
               <span
                 className={cn(
                   "text-[10.5px]",
-                  item.source === "paper" ? "bg-[hsl(var(--highlight))] px-1.5 text-foreground" : "text-muted-foreground",
+                  item.source === "paper" ? "bg-[hsl(var(--highlight))] px-1.5 text-[#111]" : "text-muted-foreground",
                 )}
               >
                 {item.source === "paper" ? "written from the paper" : "template"}
@@ -136,14 +135,14 @@ export function ProjectSpecimen() {
 
 const LOG = [
   "$ python train.py --config config.yaml",
-  "mlflow  run 7f3a2c started · experiment transformer-wmt14",
-  "data    WMT14 en-de · vocab 37000 (shared BPE)",
-  "model   transformer-base · 65.0M params",
-  "step   1000  loss 4.812  lr 1.75e-04",
-  "step   2000  loss 3.906  lr 3.49e-04",
-  "step   3000  loss 3.311  lr 5.24e-04",
-  "step   4000  loss 2.987  lr 6.99e-04",
-  "ckpt    saved checkpoints/step_4000.pt",
+  "mlflow  run 3b91e0 started · experiment adam-cifar10",
+  "data    CIFAR-10 · 50,000 train / 10,000 test · whitened",
+  "model   cnn c64-c64-c128-1000 · dropout on input and fc",
+  "optim   adam · lr 1e-3 · betas (0.9, 0.999) · eps 1e-8",
+  "epoch   1  loss 1.684  test_acc 0.412",
+  "epoch   2  loss 1.297  test_acc 0.533",
+  "epoch   3  loss 1.118  test_acc 0.597",
+  "ckpt    saved checkpoints/epoch_003.pt",
 ];
 
 export function RunSpecimen() {
@@ -158,7 +157,7 @@ export function RunSpecimen() {
                 {line.slice(1)}
               </>
             ) : (
-              <span className={line.startsWith("step") ? "text-[#e6e6e6]" : "text-[#8a8a8a]"}>{line}</span>
+              <span className={line.startsWith("epoch") ? "text-[#e6e6e6]" : "text-[#8a8a8a]"}>{line}</span>
             )}
           </div>
         ))}

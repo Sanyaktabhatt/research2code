@@ -75,5 +75,6 @@ function useDashboardBreadcrumbs(pathname: string, projectId: string | undefined
   // workspace itself, so the outer chrome only needs to place you in
   // "Projects" - repeating them here would just duplicate that UI.
   if (projectId) return [{ label: "Projects", href: "/projects" }];
+  if (pathname === "/projects/new") return [{ label: "Projects", href: "/projects" }, { label: "New project" }];
   return [{ label: "Projects" }];
 }

@@ -22,7 +22,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="space-y-7">
+    <div className="space-y-6">
       <div className="space-y-1.5">
         <h1 className="text-[1.75rem] font-semibold tracking-[-0.03em]">Create your account</h1>
         <p className="text-[15px] text-muted-foreground">Start turning papers into runnable projects.</p>
@@ -79,7 +79,7 @@ export default function SignupPage() {
 
       <OAuthButtons />
 
-      <p className="border-t border-border pt-5 text-sm text-muted-foreground">
+      <p className="border-t border-border pt-5 text-center text-sm text-muted-foreground">
         Already have an account?{" "}
         <Link href="/login" className="font-medium text-foreground underline decoration-border-strong underline-offset-4 transition-colors hover:decoration-foreground">
           Sign in

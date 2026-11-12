@@ -26,7 +26,7 @@ export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
           <span key={`${item.label}-${index}`} className="flex items-center gap-1">
             <ChevronRight className="size-3.5 shrink-0 text-muted-foreground/60" />
             {item.href && !isLast ? (
-              <Link href={item.href} className="max-w-[14rem] truncate rounded text-info underline-offset-2 hover:underline">
+              <Link href={item.href} className="max-w-[14rem] truncate rounded text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline">
                 {item.label}
               </Link>
             ) : (

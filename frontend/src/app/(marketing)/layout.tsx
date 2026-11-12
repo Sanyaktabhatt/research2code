@@ -2,6 +2,7 @@ import Link from "next/link";
 import { APP_NAME } from "@/config/constants";
 import { Logo } from "@/components/brand/wordmark";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
 
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -13,6 +14,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
             <Logo size="md" className="hidden sm:inline-flex" />
           </Link>
           <nav aria-label="Account" className="flex items-center gap-1.5 sm:gap-2">
+            <ThemeToggle />
             <Button asChild variant="ghost" className="h-8 px-2.5 sm:h-9 sm:px-4 sm:text-[15px]">
               <Link href="/login">Sign In</Link>
             </Button>

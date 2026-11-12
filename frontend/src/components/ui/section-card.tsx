@@ -24,7 +24,7 @@ export function SectionCard({ title, description, action, children, className }:
         {action && (
           <Link
             href={action.href}
-            className="group/link flex shrink-0 items-center gap-0.5 rounded-sm text-[13px] font-medium text-info underline-offset-2 hover:underline"
+            className="group/link flex shrink-0 items-center gap-0.5 rounded-sm text-[13px] font-medium text-foreground underline decoration-border-strong underline-offset-4 transition-colors hover:decoration-foreground"
           >
             {action.label}
             <ArrowRight className="size-3 transition-transform duration-150 group-hover/link:translate-x-0.5" />

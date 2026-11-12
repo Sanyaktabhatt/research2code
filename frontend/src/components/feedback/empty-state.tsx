@@ -14,8 +14,8 @@ interface EmptyStateProps {
 }
 
 /**
- * Shared empty state: a neutral icon well on a dashed, low-contrast
- * surface, with a quick fade-in. Kept content-neutral - no illustration
+ * Shared empty state: a quiet muted icon, title and hint with a quick
+ * fade-in - no box, so empty panels stay calm. Kept content-neutral - no illustration
  * assumes what's missing, since this one component covers ~30 different
  * "nothing here yet" moments across the app.
  */
@@ -26,13 +26,13 @@ export function EmptyState({ icon: Icon, title, description, action, className }
       initial="hidden"
       animate="show"
       className={cn(
-        "flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-border-strong/70 bg-muted/40 px-6 py-8 text-center",
+        "flex flex-col items-center justify-center gap-2.5 px-6 py-8 text-center",
         className,
       )}
     >
       {Icon && (
-        <div className="flex size-10 items-center justify-center rounded-md border border-border bg-card text-muted-foreground shadow-xs" aria-hidden="true">
-          <Icon className="size-[18px]" />
+        <div className="flex size-9 items-center justify-center rounded-full bg-muted text-muted-foreground" aria-hidden="true">
+          <Icon className="size-4" strokeWidth={1.75} />
         </div>
       )}
       <div className="space-y-1">

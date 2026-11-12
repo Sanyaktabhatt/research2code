@@ -380,6 +380,11 @@
   .group:hover .logo-cursor, .logo-cursor-on { animation: logo-blink 1.05s steps(1) infinite; }
   @keyframes logo-blink { 50% { opacity: 0; } }
   @keyframes grow-x { to { transform: scaleX(1); } }
+  /* Auth backdrop fragments: fade in one by one, then drift slowly in place. */
+  .fragment { opacity: 0; animation: fragment-in 1.2s ease-out forwards; animation-delay: calc(0.3s + var(--i, 0) * 110ms); }
+  .drift { animation: drift var(--d, 9s) ease-in-out infinite alternate; }
+  @keyframes fragment-in { to { opacity: 1; } }
+  @keyframes drift { from { transform: translate(0, 0); } to { transform: translate(8px, -14px); } }
   @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 }
 
