@@ -32,5 +32,15 @@ export function RunningJobs() {
     })),
   ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
+  if (jobs.length === 0) {
+    // A one-liner rather than the full empty state - this sits in a narrow side column.
+    return (
+      <p className="flex items-center gap-2.5 text-sm text-muted-foreground">
+        <span className="size-1.5 shrink-0 rounded-full bg-border-strong" aria-hidden="true" />
+        Nothing running. Code generation and training runs appear here while they work.
+      </p>
+    );
+  }
+
   return <JobQueue jobs={jobs} />;
 }
