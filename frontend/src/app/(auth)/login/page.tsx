@@ -26,7 +26,7 @@ export default function LoginPage() {
   return (
     <div className="space-y-7">
       <div className="space-y-1.5">
-        <h1 className="text-2xl font-semibold tracking-tight">Sign in</h1>
+        <h1 className="text-[1.75rem] font-semibold tracking-[-0.03em]">Sign in</h1>
         <p className="text-[15px] text-muted-foreground">Welcome back to Research2Code.</p>
       </div>
 
@@ -74,9 +74,9 @@ export default function LoginPage() {
 
       <OAuthButtons />
 
-      <p className="border-t border-border pt-5 text-center text-sm text-muted-foreground">
+      <p className="border-t border-border pt-5 text-sm text-muted-foreground">
         New to Research2Code?{" "}
-        <Link href="/signup" className="font-medium text-info underline-offset-2 hover:underline">
+        <Link href="/signup" className="font-medium text-foreground underline decoration-border-strong underline-offset-4 transition-colors hover:decoration-foreground">
           Create an account
         </Link>
       </p>

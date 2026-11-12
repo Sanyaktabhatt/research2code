@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-svh flex-col bg-background">
-      <header className="sticky top-0 z-20 border-b border-border bg-card">
+    <div className="flex min-h-svh flex-col bg-background text-foreground">
+      <header className="sticky top-0 z-20 border-b border-border bg-background/90 backdrop-blur">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
           <Link href="/" className="rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={`${APP_NAME} home`}>
             <Logo size="sm" className="sm:hidden" />
@@ -16,7 +16,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
             <Button asChild variant="ghost" className="h-8 px-2.5 sm:h-9 sm:px-4 sm:text-[15px]">
               <Link href="/login">Sign In</Link>
             </Button>
-            <Button asChild className="h-8 px-3 sm:h-9 sm:px-4 sm:text-[15px]">
+            <Button asChild className="h-8 rounded-none px-3 sm:h-9 sm:px-4 sm:text-[15px]">
               <Link href="/signup">Get Started</Link>
             </Button>
           </nav>

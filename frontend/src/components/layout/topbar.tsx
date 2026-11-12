@@ -93,9 +93,9 @@ function NavLink({ href, label, active }: { href: string; label: string; active:
       aria-current={active ? "page" : undefined}
       className={cn(
         "group relative flex shrink-0 items-center whitespace-nowrap outline-none",
-        // Active marker: a restrained orange underline flush with the navbar's bottom border.
-        "after:absolute after:inset-x-1 after:bottom-0 after:h-[3px] after:rounded-t-sm after:bg-transparent after:transition-colors",
-        active && "after:bg-primary",
+        // Active marker: an ink underline flush with the navbar's bottom border that grows in from the center.
+        "after:absolute after:inset-x-1 after:bottom-0 after:h-[2px] after:origin-center after:scale-x-0 after:bg-foreground after:transition-transform after:duration-300 after:ease-out",
+        active ? "after:scale-x-100" : "hover:after:scale-x-50",
       )}
     >
       <span

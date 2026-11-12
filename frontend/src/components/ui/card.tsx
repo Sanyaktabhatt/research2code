@@ -19,7 +19,7 @@ const Card = React.forwardRef<
       // `className` at the specific call sites that need matched-height
       // siblings (see dashboard/page.tsx) instead of defaulting every Card
       // in the app to it.
-      "flex flex-col rounded-lg border border-border bg-card text-card-foreground shadow-xs transition-colors duration-150",
+      "flex flex-col rounded-lg border border-border bg-card text-card-foreground shadow-xs transition-[colors,box-shadow,border-color] duration-200",
       className
     )}
     {...props}

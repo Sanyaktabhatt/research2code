@@ -1,9 +1,9 @@
-import { BrandMark, BRAND_ORANGE, type BrandVariant } from "@/components/brand/brand-mark";
+import { BrandMark, type BrandVariant } from "@/components/brand/brand-mark";
 import { cn } from "@/lib/utils/cn";
 
 const TEXT_TONE: Record<BrandVariant, string> = {
   auto: "text-foreground",
-  onLight: "text-[hsl(218_44%_16%)]",
+  onLight: "text-[#111]",
   onDark: "text-white",
 };
 
@@ -28,7 +28,7 @@ export function Wordmark({ className, size = "sm", variant = "auto", accent = tr
       )}
     >
       Research
-      <span style={accent ? { color: BRAND_ORANGE } : undefined}>2</span>
+      <span className={accent ? "text-muted-foreground" : undefined}>2</span>
       Code
     </span>
   );
@@ -53,7 +53,7 @@ const LOGO_SIZES = {
 export function Logo({ className, variant = "auto", size = "md", collapseOnMobile = false }: LogoProps) {
   const dims = LOGO_SIZES[size];
   return (
-    <span className={cn("inline-flex items-center", dims.gap, className)}>
+    <span className={cn("group inline-flex items-center", dims.gap, className)}>
       <BrandMark size={dims.mark} variant={variant} />
       <Wordmark variant={variant} className={cn(dims.text, collapseOnMobile && "hidden sm:inline")} />
     </span>

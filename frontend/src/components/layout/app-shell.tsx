@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { usePathname } from "next/navigation";
 import { CommandPalette } from "@/components/layout/command-palette";
 import { Topbar } from "@/components/layout/topbar";
 import { Breadcrumbs, type Breadcrumb } from "@/components/layout/breadcrumbs";
@@ -14,6 +15,7 @@ interface AppShellProps {
 }
 
 export function AppShell({ children, breadcrumbs = [], fullBleed = false }: AppShellProps) {
+  const pathname = usePathname();
   return (
     <div className="flex h-svh flex-col overflow-hidden bg-background">
       <a href="#main-content" className="skip-link">
@@ -29,7 +31,7 @@ export function AppShell({ children, breadcrumbs = [], fullBleed = false }: AppS
           // The workspace header renders its own "Projects / <name>" path.
           <ErrorBoundary>{children}</ErrorBoundary>
         ) : (
-          <div className="mx-auto w-full max-w-[1400px]">
+          <div key={pathname} className="rise mx-auto w-full max-w-[1400px]">
             {breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} className="mb-3" />}
             <ErrorBoundary>{children}</ErrorBoundary>
           </div>

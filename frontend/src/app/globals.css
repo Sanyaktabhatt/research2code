@@ -9,35 +9,35 @@
        orange" reserved for primary actions and active-state markers.
        Interactive focus/link affordances use a separate blue so orange
        never has to double as both "brand" and "keyboard focus". */
-    --background: 220 16% 97%;
-    --foreground: 218 41% 14%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 7%;
 
     --card: 0 0% 100%;
-    --card-foreground: 218 41% 14%;
+    --card-foreground: 0 0% 7%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 218 41% 14%;
+    --popover-foreground: 0 0% 7%;
 
     /* Brand ramp - kept as tokens because a few legacy utilities read
        them; all three resolve to the same orange family on purpose. */
-    --brand-1: 21 90% 45%;
-    --brand-2: 21 90% 45%;
-    --brand-3: 21 90% 45%;
+    --brand-1: 0 0% 7%;
+    --brand-2: 0 0% 7%;
+    --brand-3: 0 0% 7%;
 
-    --primary: 21 90% 45%;
-    --primary-hover: 20 90% 39%;
+    --primary: 0 0% 7%;
+    --primary-hover: 0 0% 22%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 16% 94%;
-    --secondary-foreground: 218 41% 14%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 7%;
 
-    --muted: 220 16% 95%;
-    --muted-foreground: 218 12% 42%;
+    --muted: 0 0% 96.5%;
+    --muted-foreground: 0 0% 38%;
 
-    --accent: 216 24% 94%;
-    --accent-foreground: 218 41% 14%;
+    --accent: 0 0% 95.5%;
+    --accent-foreground: 0 0% 7%;
 
-    --info: 211 82% 42%;
+    --info: 214 80% 44%;
     --info-foreground: 0 0% 100%;
 
     --destructive: 0 70% 46%;
@@ -49,14 +49,15 @@
     --warning: 36 92% 42%;
     --warning-foreground: 30 60% 14%;
 
-    --border: 220 14% 87%;
-    --border-strong: 220 11% 74%;
-    --input: 220 11% 76%;
-    --ring: 211 82% 46%;
+    --border: 0 0% 89%;
+    --border-strong: 0 0% 75%;
+    --input: 0 0% 80%;
+    --ring: 0 0% 7%;
 
-    --radius: 0.375rem;
+    --highlight: 52 100% 64%;
+    --radius: 0.3rem;
 
-    --shadow-color: 218 40% 12%;
+    --shadow-color: 0 0% 0%;
     --shadow-xs: 0 1px 1px hsl(var(--shadow-color) / 0.04);
     --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.06);
     --shadow-md: 0 2px 6px -1px hsl(var(--shadow-color) / 0.08), 0 1px 2px hsl(var(--shadow-color) / 0.05);
@@ -65,27 +66,27 @@
 
     /* App shell - a deep navy rail so the global navigation reads as
        chrome, distinct from the white working surfaces beside it. */
-    --sidebar: 218 44% 13%;
-    --sidebar-foreground: 216 22% 80%;
-    --sidebar-border: 218 32% 20%;
-    --sidebar-accent: 218 34% 20%;
+    --sidebar: 0 0% 7%;
+    --sidebar-foreground: 0 0% 75%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-accent: 0 0% 14%;
     --sidebar-accent-foreground: 0 0% 100%;
 
     /* Chart series - a calm, distinguishable set; orange is second so a
        single-series chart stays neutral blue rather than shouting. */
-    --chart-1: 211 70% 44%;
-    --chart-2: 21 86% 50%;
-    --chart-3: 174 58% 34%;
-    --chart-4: 258 34% 52%;
-    --chart-5: 145 48% 38%;
+    --chart-1: 0 0% 12%;
+    --chart-2: 214 75% 48%;
+    --chart-3: 42 95% 48%;
+    --chart-4: 350 65% 52%;
+    --chart-5: 152 50% 36%;
 
-    --flow-agent: 211 70% 44%;
-    --flow-entity: 196 64% 40%;
+    --flow-agent: 0 0% 15%;
+    --flow-entity: 214 70% 48%;
     --flow-relation: 218 10% 66%;
-    --flow-active: 21 90% 48%;
+    --flow-active: 42 95% 48%;
 
     --stage-pending: 218 10% 62%;
-    --stage-running: 211 82% 46%;
+    --stage-running: 214 80% 46%;
     --stage-success: 145 63% 34%;
     --stage-error: 0 70% 48%;
 
@@ -112,33 +113,33 @@
   }
 
   .dark {
-    --background: 220 26% 8%;
-    --foreground: 214 24% 92%;
+    --background: 0 0% 5.5%;
+    --foreground: 0 0% 93%;
 
-    --card: 220 24% 11%;
-    --card-foreground: 214 24% 92%;
+    --card: 0 0% 8.5%;
+    --card-foreground: 0 0% 93%;
 
-    --popover: 220 24% 12%;
-    --popover-foreground: 214 24% 92%;
+    --popover: 0 0% 9.5%;
+    --popover-foreground: 0 0% 93%;
 
-    --brand-1: 24 92% 56%;
-    --brand-2: 24 92% 56%;
-    --brand-3: 24 92% 56%;
+    --brand-1: 0 0% 96%;
+    --brand-2: 0 0% 96%;
+    --brand-3: 0 0% 96%;
 
-    --primary: 24 92% 56%;
-    --primary-hover: 24 92% 62%;
-    --primary-foreground: 220 40% 8%;
+    --primary: 0 0% 96%;
+    --primary-hover: 0 0% 84%;
+    --primary-foreground: 0 0% 7%;
 
-    --secondary: 220 18% 16%;
-    --secondary-foreground: 214 24% 92%;
+    --secondary: 0 0% 13%;
+    --secondary-foreground: 0 0% 93%;
 
-    --muted: 220 18% 15%;
-    --muted-foreground: 216 12% 64%;
+    --muted: 0 0% 11.5%;
+    --muted-foreground: 0 0% 62%;
 
-    --accent: 220 18% 18%;
-    --accent-foreground: 214 24% 96%;
+    --accent: 0 0% 14%;
+    --accent-foreground: 0 0% 96%;
 
-    --info: 211 86% 64%;
+    --info: 214 90% 66%;
     --info-foreground: 220 40% 8%;
 
     --destructive: 0 72% 62%;
@@ -150,37 +151,37 @@
     --warning: 38 90% 56%;
     --warning-foreground: 30 40% 10%;
 
-    --border: 220 16% 20%;
-    --border-strong: 220 14% 30%;
-    --input: 220 14% 28%;
-    --ring: 211 86% 62%;
+    --border: 0 0% 16%;
+    --border-strong: 0 0% 27%;
+    --input: 0 0% 24%;
+    --ring: 0 0% 90%;
 
-    --shadow-color: 220 50% 2%;
+    --shadow-color: 0 0% 0%;
     --shadow-xs: 0 1px 1px hsl(var(--shadow-color) / 0.3);
     --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.35);
     --shadow-md: 0 2px 8px -1px hsl(var(--shadow-color) / 0.45);
     --shadow-lg: 0 10px 24px -6px hsl(var(--shadow-color) / 0.55);
     --shadow-xl: 0 18px 40px -10px hsl(var(--shadow-color) / 0.65);
 
-    --sidebar: 220 30% 6%;
-    --sidebar-foreground: 216 16% 74%;
-    --sidebar-border: 220 18% 15%;
-    --sidebar-accent: 220 20% 14%;
+    --sidebar: 0 0% 4%;
+    --sidebar-foreground: 0 0% 72%;
+    --sidebar-border: 0 0% 12%;
+    --sidebar-accent: 0 0% 13%;
     --sidebar-accent-foreground: 0 0% 100%;
 
-    --chart-1: 211 80% 62%;
-    --chart-2: 24 90% 58%;
-    --chart-3: 174 52% 46%;
-    --chart-4: 258 50% 70%;
-    --chart-5: 145 45% 50%;
+    --chart-1: 0 0% 90%;
+    --chart-2: 214 90% 66%;
+    --chart-3: 48 100% 60%;
+    --chart-4: 350 75% 66%;
+    --chart-5: 152 50% 52%;
 
-    --flow-agent: 211 80% 62%;
-    --flow-entity: 196 60% 52%;
+    --flow-agent: 0 0% 85%;
+    --flow-entity: 214 85% 66%;
     --flow-relation: 218 10% 42%;
-    --flow-active: 24 92% 58%;
+    --flow-active: 48 100% 60%;
 
     --stage-pending: 218 10% 46%;
-    --stage-running: 211 86% 62%;
+    --stage-running: 214 90% 66%;
     --stage-success: 145 50% 50%;
     --stage-error: 0 72% 62%;
 
@@ -219,7 +220,7 @@
   }
 
   ::selection {
-    @apply bg-info/20;
+    background-color: hsl(var(--highlight) / 0.6);
   }
 
   /* Keyboard-only focus indicator, consistent everywhere a native
@@ -261,54 +262,23 @@
     @apply transition-[box-shadow,border-color] duration-150 ease-out;
   }
   .interactive-surface:hover {
-    @apply border-border-strong shadow-md;
+    @apply border-foreground/30 shadow-md;
   }
 
-  /* --- Identity utilities ---------------------------------------------
-     These names predate the enterprise redesign and are still referenced
-     across feature components. They are intentionally redefined as flat,
-     restrained treatments (solid fills, hairline borders, no glow/blur)
-     so every call site inherits the new visual language at once. */
-
-  /* Solid primary fill - the brand's one accent, used for the logo tile,
-     active-state markers and primary actions. */
-  .bg-gradient-brand {
-    background-color: hsl(var(--primary));
-  }
-  /* Quiet tinted surface for icon wells and highlighted regions. */
-  .bg-gradient-brand-soft {
-    background-color: hsl(var(--primary) / 0.08);
-  }
-  .text-gradient-brand {
-    color: hsl(var(--primary));
-  }
-  .border-gradient-brand {
-    border-color: hsl(var(--primary));
-  }
-
+  /* Legacy identity utilities, kept flat so existing call sites stay valid. */
+  .bg-gradient-brand { background-color: hsl(var(--primary)); }
+  .bg-gradient-brand-soft { background-color: hsl(var(--primary) / 0.08); }
+  .text-gradient-brand,
+  .animate-gradient-text { color: hsl(var(--primary)); }
+  .border-gradient-brand { border-color: hsl(var(--primary)); }
   .shadow-glow,
-  .shadow-glow-accent {
-    box-shadow: var(--shadow-sm);
-  }
+  .shadow-glow-accent { box-shadow: var(--shadow-sm); }
+  .glow-hover { @apply transition-[box-shadow,border-color] duration-150 ease-out; }
+  .glow-hover:hover { @apply border-foreground/30 shadow-md; }
+  .bg-spotlight { background-color: hsl(var(--card)); }
+  .bg-dot-grid { background-image: none; }
 
-  .glow-hover {
-    @apply transition-[box-shadow,border-color] duration-150 ease-out;
-  }
-  .glow-hover:hover {
-    @apply border-border-strong shadow-md;
-  }
-
-  /* Formerly a multi-color radial wash - now a plain card surface. */
-  .bg-spotlight {
-    background-color: hsl(var(--card));
-  }
-
-  .bg-dot-grid {
-    background-image: none;
-  }
-
-  /* Floating chrome over busy content (graph canvas, PDF viewer): an
-     opaque card with a hairline border, not frosted glass. */
+  /* Floating chrome over busy content: opaque card with a hairline border. */
   .glass-panel {
     @apply border border-border bg-card shadow-md;
   }
@@ -392,6 +362,25 @@
   .animate-edge-flow {
     animation: edge-flow 1s linear infinite;
   }
+}
+
+
+
+@layer utilities {
+  /* Intro-page motion: short, one-shot, and purposeful. */
+  .rise { opacity: 0; animation: rise 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: calc(var(--i, 0) * 90ms); }
+  .reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+  .reveal[data-inview="true"] { opacity: 1; transform: none; }
+  /* Specimen details that play once their section scrolls into view. */
+  .grow-x { transform: scaleX(0); }
+  [data-inview="true"] .grow-x { animation: grow-x 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: calc(0.2s + var(--i, 0) * 70ms); }
+  .log-line { opacity: 0; }
+  [data-inview="true"] .log-line { animation: rise 0.35s ease-out forwards; animation-delay: calc(0.2s + var(--i, 0) * 180ms); }
+  /* Logo cursor: blinks on hover of the lockup, or always on hero placements. */
+  .group:hover .logo-cursor, .logo-cursor-on { animation: logo-blink 1.05s steps(1) infinite; }
+  @keyframes logo-blink { 50% { opacity: 0; } }
+  @keyframes grow-x { to { transform: scaleX(1); } }
+  @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 }
 
 /* Respect the OS-level "reduce motion" preference: collapse all durations to

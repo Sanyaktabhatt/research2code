@@ -5,46 +5,48 @@ export type BrandVariant = "auto" | "onLight" | "onDark";
 interface BrandMarkProps {
   /** Pixel size of the square symbol. */
   size?: number;
-  /**
-   * "auto" follows the app theme (navy tile on light surfaces, white tile on
-   * dark); "onLight"/"onDark" pin the colors for a known background.
-   */
+  /** "onDark" (and "auto" in dark mode) adds a hairline outline so the ink tile reads on black surfaces. */
   variant?: BrandVariant;
   className?: string;
-  /** Retained for API compatibility - the mark never animates. */
+  /** When true the cursor blinks continuously (splash, auth); otherwise only on hover of a parent `.group`. */
   interactive?: boolean;
 }
 
-/** The single brand orange, fixed across themes so the accent reads identically everywhere. */
-export const BRAND_ORANGE = "hsl(21 90% 50%)";
+/** Highlighter yellow - the brand's single accent. */
+export const BRAND_ORANGE = "#FFE14A";
 
-const VARIANT_CLASSES: Record<BrandVariant, string> = {
-  auto: "[--r2c-tile:hsl(218_44%_16%)] [--r2c-bar:#fff] dark:[--r2c-tile:#fff] dark:[--r2c-bar:hsl(218_44%_16%)]",
-  onLight: "[--r2c-tile:hsl(218_44%_16%)] [--r2c-bar:#fff]",
-  onDark: "[--r2c-tile:#fff] [--r2c-bar:hsl(218_44%_16%)]",
+/** Paths are shared with the static SVGs in public/brand/ and app/icon.svg. */
+export const MARK_PATHS = {
+  tile: "M7 0H23L32 9V25A7 7 0 0 1 25 32H7A7 7 0 0 1 0 25V7A7 7 0 0 1 7 0Z",
+  fold: "M23 0V6A3 3 0 0 0 26 9H32Z",
+  chevron: "M8.5 12.5 13.5 17 8.5 21.5",
 };
 
 /**
- * Research2Code symbol: a pipe-forward operator `|>` on a rounded tile. The
- * bar is the paper, the orange chevron is code being run - read together it
- * is the pipeline operator, "paper piped into an experiment". Two strokes on
- * a 32-unit grid, sized so it stays crisp at 16px. Exported as standalone
- * SVGs in public/brand/ and as the favicon (app/icon.svg).
+ * Research2Code symbol: a page with its corner folded (the paper) holding a
+ * terminal prompt and a highlighter-yellow cursor (the code it becomes).
  */
-export function BrandMark({ size = 28, variant = "auto", className }: BrandMarkProps) {
+export function BrandMark({ size = 28, variant = "auto", className, interactive = false }: BrandMarkProps) {
   return (
-    <svg
-      viewBox="0 0 32 32"
-      width={size}
-      height={size}
-      fill="none"
-      role="img"
-      aria-hidden="true"
-      className={cn("shrink-0", VARIANT_CLASSES[variant], className)}
-    >
-      <rect width="32" height="32" rx="8" fill="var(--r2c-tile)" />
-      <rect x="7.5" y="8.5" width="4.2" height="15" rx="2.1" fill="var(--r2c-bar)" />
-      <path d="M15.7 9.3 22.5 16l-6.8 6.7" stroke={BRAND_ORANGE} strokeWidth="4.2" strokeLinecap="round" strokeLinejoin="round" />
+    <svg viewBox="0 0 32 32" width={size} height={size} fill="none" aria-hidden="true" className={cn("shrink-0", className)}>
+      <path d={MARK_PATHS.tile} fill="#111111" />
+      <path
+        d={MARK_PATHS.tile}
+        className={variant === "onDark" ? undefined : variant === "auto" ? "hidden dark:block" : "hidden"}
+        stroke="white"
+        strokeOpacity="0.28"
+      />
+      <path d={MARK_PATHS.fold} fill="#5A5A5A" />
+      <path d={MARK_PATHS.chevron} stroke="white" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+      <rect
+        x="16"
+        y="19.6"
+        width="8"
+        height="2.8"
+        rx="1.2"
+        fill={BRAND_ORANGE}
+        className={interactive ? "logo-cursor-on" : "logo-cursor"}
+      />
     </svg>
   );
 }

@@ -15,7 +15,7 @@ export function SplashScreen({ className }: SplashScreenProps) {
   return (
     <div className={cn("flex min-h-svh flex-col items-center justify-center gap-5 bg-background", className)}>
       <div role="status" aria-label="Loading Research2Code" className="flex flex-col items-center gap-3">
-        <BrandMark size={36} interactive={false} />
+        <BrandMark size={36} interactive />
         <div className="flex flex-col items-center gap-1">
           <Wordmark size="lg" />
           <Tagline />
